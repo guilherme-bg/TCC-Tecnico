@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesWebMvc.Services.Exceptions;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TCC.Models;
 
 namespace TCC.Services
@@ -11,24 +14,43 @@ namespace TCC.Services
         {
             _Context = context;
         }
-        public List<Usuario> FindAll()
+
+        public async Task<List<Usuario>> FindAllAsync()
         {
-            return _Context.Usuario.ToList();
+            return await _Context.Usuario.OrderBy(x => x.Nome).ToListAsync();
         }
-        public void Insert(Usuario usuario)
+        public async Task InsertAsync(Usuario usuario)
         {
             _Context.Add(usuario);
-            _Context.SaveChanges();
+            await _Context.SaveChangesAsync();
         }
-        public Usuario FindById(int id)
+        public async Task<Usuario> FindByIdAsync(int id)
         {
-            return _Context.Usuario.FirstOrDefault(obj => obj.Id == id);
+            return await _Context.Usuario.FirstOrDefaultAsync(obj => obj.Id == id);
         }
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            var obj = _Context.Usuario.Find(id);
+            var obj = await _Context.Usuario.FindAsync(id);
             _Context.Usuario.Remove(obj);
-            _Context.SaveChanges();
+            await _Context.SaveChangesAsync();
+        }
+        public async Task UpdateAsync(Usuario obj)
+        {
+            bool hasAny = await _Context.Usuario.AnyAsync(x => x.Id == obj.Id);
+            if (!hasAny)
+            {
+                throw new NotFoundException("Id not Found");
+            }
+            try
+            {
+                _Context.Update(obj);
+                await _Context.SaveChangesAsync();
+            }
+            catch (DbConcurrencyException e)
+            {
+                throw new DbConcurrencyException(e.Message);
+            }
         }
     }
+
 }

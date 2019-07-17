@@ -1,0 +1,85 @@
+﻿@model IEnumerable<TCC.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>
+    <a asp-action="Create" class="btn btn-default">Cadastrar Novo</a>
+</p>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr class="success">
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Senha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CPF)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Endereco)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CEP)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="3" style="color: red">
+                    Sem Resultados.
+                </td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Nome
+                    </td>
+
+                    <td>
+                        @item.Email
+                    </td>
+
+                    <td>
+                        @item.Senha
+                    </td>
+
+                    <td>
+                        @item.Telefone
+                    </td>
+
+                    <td>
+                        @item.CPF
+                    </td>
+
+                    <td>
+                        @item.Endereco
+                    </td>
+                    <td>
+                        @item.CEP
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
