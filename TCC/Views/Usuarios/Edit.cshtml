@@ -46,6 +46,23 @@
                 <span asp-validation-for="CEP" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label class="control-label">Selecione o tipo de sua moradia:</label>
+                <label><input asp-for="Moradia" value="Casa" type="radio" />Casa</label>
+                <label><input asp-for="Moradia" value="Apartamento" type="radio" />Apartamento</label>
+                <span asp-validation-for="Moradia" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Você possui telas nas saídas de sua residência(portas, janelas)?</label>
+                <label><input asp-for="Protecao" value="Sim" type="radio" />Sim</label>
+                <label><input asp-for="Protecao" value="Não" type="radio" />Não</label>
+                <span asp-validation-for="Protecao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Quantos animais você possui em sua residência?</label>
+                <input asp-for="QtAnimais" class="form-control" />
+                <span asp-validation-for="QtAnimais" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-default" />
             </div>
         </form>

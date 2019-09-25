@@ -31,6 +31,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.CEP)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Moradia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Protecao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QtAnimais)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -72,6 +81,15 @@
                     </td>
                     <td>
                         @item.CEP
+                    </td>
+                    <td>
+                        @item.Moradia
+                    </td>
+                    <td>
+                        @item.Protecao
+                    </td>
+                    <td>
+                        @item.QtAnimais
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
