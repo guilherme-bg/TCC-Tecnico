@@ -26,7 +26,7 @@ namespace TCC.Services
         }
         public async Task<Usuario> FindByIdAsync(int id)
         {
-            return await _Context.Usuario.FirstOrDefaultAsync(obj => obj.Id == id);
+            return await _Context.Usuario.Include(obj => obj.Cidade).FirstOrDefaultAsync(obj => obj.Id == id);
         }
         public async Task RemoveAsync(int id)
         {

@@ -23,13 +23,7 @@
                 @Html.DisplayNameFor(model => model.Telefone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CPF)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Endereco)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CEP)
+                @Html.DisplayNameFor(model => model.Cidade)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Moradia)
@@ -57,45 +51,42 @@
             {
                 <tr>
                     <td>
-                        @item.Nome
+                        @Html.DisplayFor(ModelItem => item.Nome)
                     </td>
 
                     <td>
-                        @item.Email
+                        @Html.DisplayFor(ModelItem => item.Email)
                     </td>
 
                     <td>
-                        @item.Senha
+                        @Html.DisplayFor(ModelItem => item.Senha)
                     </td>
 
                     <td>
-                        @item.Telefone
+                        @Html.DisplayFor(ModelItem => item.Telefone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(ModelItem => item.Cidade.Nome)
                     </td>
 
                     <td>
-                        @item.CPF
+                        @Html.DisplayFor(ModelItem => item.Moradia)
                     </td>
 
                     <td>
-                        @item.Endereco
+                        @Html.DisplayFor(ModelItem => item.Protecao)
                     </td>
+
                     <td>
-                        @item.CEP
+                        @Html.DisplayFor(ModelItem => item.QtAnimais)
                     </td>
-                    <td>
-                        @item.Moradia
-                    </td>
-                    <td>
-                        @item.Protecao
-                    </td>
-                    <td>
-                        @item.QtAnimais
-                    </td>
+
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </td>
+
                 </tr>
             }
         }

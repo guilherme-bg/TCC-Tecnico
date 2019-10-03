@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using TCC.Models;
@@ -11,18 +13,24 @@ namespace TCC.Controllers
     public class UsuariosController : Controller
     {
         private readonly UsuarioService _UsuarioService;
-        public UsuariosController(UsuarioService usuarioService)
+        private readonly CidadeService _CidadeService;
+        private SignInManager<Usuario> _SignInManager;
+        private UserManager<Usuario> _UserManager;
+        public UsuariosController(UsuarioService usuarioService, CidadeService cidadeService, SignInManager<Usuario> signInManager, UserManager<Usuario> _userManager)
         {
             _UsuarioService = usuarioService;
+            _CidadeService = cidadeService;
         }
         public async Task<IActionResult> Index()
         {
             var list = await _UsuarioService.FindAllAsync();
             return View(list);
         }
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var cidades =  await _CidadeService.FindAllAsync();
+            var ViewModel = new UsuarioFormViewModel { Cidades = cidades };
+            return View(ViewModel);
         }
 
         [HttpPost]
@@ -30,7 +38,9 @@ namespace TCC.Controllers
         public async Task<IActionResult> Create(Usuario usuario)
         {
             if (!ModelState.IsValid)
-            {                
+            {
+                var cidades = await _CidadeService.FindAllAsync();
+                var viewmodel = new UsuarioFormViewModel { Usuario = usuario, Cidades = cidades };
                 return View(usuario);
             }
             await _UsuarioService.InsertAsync(usuario);
@@ -87,7 +97,9 @@ namespace TCC.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
-            return View(obj);
+            List<Cidade> cidades = await _CidadeService.FindAllAsync();
+            UsuarioFormViewModel viewmodel = new UsuarioFormViewModel { Usuario = obj, Cidades = cidades };
+            return View(viewmodel);
         }
 
         [HttpPost]
@@ -96,6 +108,8 @@ namespace TCC.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var cidades = await _CidadeService.FindAllAsync();
+                var viewmodel = new UsuarioFormViewModel { Usuario = usuario, Cidades = cidades };
                 return View(usuario);
             }
             if (id != usuario.Id)
