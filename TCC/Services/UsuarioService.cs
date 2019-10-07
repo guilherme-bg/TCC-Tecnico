@@ -24,7 +24,7 @@ namespace TCC.Services
             _Context.Add(usuario);
             await _Context.SaveChangesAsync();
         }
-        public async Task<Usuario> FindByIdAsync(int id)
+        public async Task<Usuario> FindByIdAsync(string id)
         {
             return await _Context.Usuario.Include(obj => obj.Cidade).FirstOrDefaultAsync(obj => obj.Id == id);
         }

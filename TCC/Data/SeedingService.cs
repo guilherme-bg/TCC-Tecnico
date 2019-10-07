@@ -61,10 +61,7 @@ namespace TCC.Data
                 c29, c30, c31, c32, c33, c34
                 );
 
-            Usuario u1 = new Usuario(1, "Guilherme", "guilhermebritogasparini@gmail.com", "123456789", "980652317", c4, "Casa", "Sim", 1);
-            _context.Usuario.Add(u1);
-
-            _context.SaveChanges();
+           _context.SaveChanges();
         }
     }
 }

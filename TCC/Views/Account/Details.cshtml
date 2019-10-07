@@ -1,0 +1,64 @@
+﻿@model Usuario
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h2>@ViewData["Title"] </h2>
+<h3>Usuário</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            Senha:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PasswordHash)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Telefone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Telefone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cidade)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cidade.Nome)
+        </dd>
+        <dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Moradia)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Moradia)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Protecao)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Protecao)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.QtAnimais)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.QtAnimais)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Retornar para a lista</a>
+</div>
