@@ -12,9 +12,11 @@ namespace TCC.Models {
         }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Cidade> Cidade { get; set; }
+        public DbSet<Animal> Animal { get; set; }
         protected override void OnModelCreating(ModelBuilder builder) {
             builder.Entity<Usuario>().HasKey(m => m.Id);
             builder.Entity<Cidade>().HasKey(m => m.Id);
+            builder.Entity<Animal>().HasKey(m => m.Id);
             base.OnModelCreating(builder);
         }
     }

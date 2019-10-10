@@ -49,6 +49,7 @@ namespace TCC {
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddScoped<UsuarioService>();
             services.AddScoped<CidadeService>();
+            services.AddScoped<AnimalService>();
             services.AddScoped<SeedingService>();
         }
 

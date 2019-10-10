@@ -38,7 +38,8 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">Sobre</a></li>
-                    <li><a asp-area="" asp-controller="Account" asp-action="Index">Usuarios</a></li>                    
+                    <li><a asp-area="" asp-controller="Account" asp-action="Index">Usuarios</a></li>
+                    <li><a asp-area="" asp-controller="Administration" asp-action="Index">Níveis de Conta</a></li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     @if (signInManager.IsSignedIn(User))
