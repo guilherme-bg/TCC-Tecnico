@@ -37,7 +37,9 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Usuario.CidadeId" class="control-label"></label>
-                    <select asp-for="Usuario.CidadeId" asp-items="@(new SelectList(Model.Cidades,"Id","Nome"))" class="form-control"></select>
+                    @Html.DropDownListFor(m => m.Usuario.CidadeId, new SelectList(Model.Cidades, "Id", "Nome"), "Selecione a Cidade--", new { @class = "form-control" })
+                    <!--<select asp-for="Usuario.CidadeId" asp-items="@(new SelectList(Model.Cidades,"Id","Nome"))" class="form-control"></select>-->
+                    <span asp-validation-for="Usuario.CidadeId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Selecione o tipo de sua moradia:</label>

@@ -39,11 +39,12 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">Sobre</a></li>
                     <li><a asp-area="" asp-controller="Account" asp-action="Index">Usuarios</a></li>
-                    <li><a asp-area="" asp-controller="Administration" asp-action="Index">Níveis de Conta</a></li>
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
+                        <li><a asp-area="" asp-controller="Administration" asp-action="Index">Níveis de Conta</a></li>
+                    }
                 </ul>
                 <ul class="nav navbar-nav pull-right">
-                    @if (signInManager.IsSignedIn(User))
-                    {
+                    @if (signInManager.IsSignedIn(User)) {
                         <li>
                             <form method="post" asp-action="Logout" asp-controller="Account">
                                 <button type="submit" class="navbar-link btn btn-link py-0" style="width:auto">
@@ -51,9 +52,7 @@
                                 </button>
                             </form>
                         </li>
-                    }
-                    else
-                    {
+                    } else {
                         <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
                     }

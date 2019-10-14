@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,6 +22,8 @@ namespace TCC.Models.ViewModels
         public string ConfirmPassword { get; set; }
 
         public Usuario Usuario { get; set; }
+
+        public string Cidade { get; set; }
         public ICollection<Cidade> Cidades{ get; set; }
     }
 }

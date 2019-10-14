@@ -17,12 +17,14 @@ namespace TCC.Controllers {
         private readonly CidadeService _CidadeService;
         private readonly UsuarioService _UsuarioService;
         private readonly TCCContext _TccContext;
-        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, TCCContext tccContext) {
+        private readonly RoleManager<IdentityRole> RoleManager;
+        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, TCCContext tccContext, RoleManager<IdentityRole> roleManager) {
             UserManager = userManager;
             SignInManager = signInManager;
             _CidadeService = cidadeService;
             _UsuarioService = usuarioService;
             _TccContext = tccContext;
+            RoleManager = roleManager;
         }
         [HttpPost]
         public async Task<IActionResult> Logout() {
@@ -32,8 +34,8 @@ namespace TCC.Controllers {
         [AllowAnonymous]
         public async Task<IActionResult> Register() {
             var cidades = await _CidadeService.FindAllAsync();
-            var ViewModel = new RegistrarUsuarioFormViewModel { Cidades = cidades };
-            return View(ViewModel);
+            var model = new RegistrarUsuarioFormViewModel { Cidades = cidades };
+            return View(model);
         }
         [AcceptVerbs("Get", "Post")]
         [AllowAnonymous]
@@ -48,6 +50,8 @@ namespace TCC.Controllers {
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegistrarUsuarioFormViewModel model) {
+            var cidades = await _CidadeService.FindAllAsync();
+            model.Cidades = cidades;
             if (ModelState.IsValid) {
                 var user = new Usuario {
                     UserName = model.Email,
@@ -62,7 +66,8 @@ namespace TCC.Controllers {
                 };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
-                    await SignInManager.SignInAsync(user, isPersistent: false);
+                    await UserManager.AddToRoleAsync(user, "UsuarioNormal");
+                    await SignInManager.SignInAsync(user, isPersistent: false);                    
                     return RedirectToAction("index", "home");
                 }
                 foreach (var error in result.Errors) {
@@ -107,12 +112,18 @@ namespace TCC.Controllers {
             }
             return View(obj);
         }
+        [AllowAnonymous]
         public IActionResult Error(string message) {
             var viewModel = new ErrorViewModel {
                 Message = message,
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModel);
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied() {
+            return View();
         }
     }
 }
