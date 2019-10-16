@@ -9,7 +9,6 @@ namespace TCC.Models
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 
         public Cidade()
         {
@@ -19,11 +18,6 @@ namespace TCC.Models
         {
             Id = id;
             Nome = nome;            
-        }
-
-        public void AdicionarUsuarios(Usuario usuario)
-        {
-            Usuarios.Add(usuario);
-        }
+        }        
     }
 }

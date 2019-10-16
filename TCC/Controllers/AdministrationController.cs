@@ -14,7 +14,6 @@ namespace TCC.Controllers {
     public class AdministrationController : Controller {
 
         private readonly RoleManager<IdentityRole> RoleManager;
-
         public UserManager<Usuario> UserManager { get; }
 
         public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<Usuario> userManager) {
@@ -116,5 +115,15 @@ namespace TCC.Controllers {
             }
             return RedirectToAction("Edit", new { Id = roleId });
         }
+
+        public async Task<IActionResult> Delete(string id) {
+            var role = await RoleManager.FindByIdAsync(id);
+            var result = await RoleManager.DeleteAsync(role);
+            if (result.Succeeded) {
+                return RedirectToAction("Index");
+            }
+            return View("Index");
+        }
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿@model TCC.Models.ViewModels.RegistrarUsuarioFormViewModel
 
-@{ 
+@{
     ViewData["Title"] = "Register";
 }
 
@@ -10,56 +10,69 @@
     <div class="col-md-12">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger">
+                <p>* Campos obrigatórios</p>
                 <div class="form-group">
-                    <label asp-for="Email"></label>
+                    <label>*Email</label>
                     <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Password"></label>
+                    <label>*Senha</label>
                     <input asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="ConfirmPassword"></label>
+                    <label>*Confirmar senha</label>
                     <input asp-for="ConfirmPassword" class="form-control" />
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Usuario.Nome" class="control-label"></label>
+                    <label>*Nome</label>
                     <input asp-for="Usuario.Nome" class="form-control" />
                     <span asp-validation-for="Usuario.Nome" class="text-danger"></span>
-                </div>                
+                </div>
                 <div class="form-group">
-                    <label asp-for="Usuario.Telefone" class="control-label"></label>
-                    <input asp-for="Usuario.Telefone" class="form-control" />
+                    <label>*Telefone</label>
+                    <input id="telefone" asp-for="Usuario.Telefone" class="form-control" />
                     <span asp-validation-for="Usuario.Telefone" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Usuario.CidadeId" class="control-label"></label>
+                    <label>*Cidade</label>
                     @Html.DropDownListFor(m => m.Usuario.CidadeId, new SelectList(Model.Cidades, "Id", "Nome"), "Selecione a Cidade--", new { @class = "form-control" })
-                    <!--<select asp-for="Usuario.CidadeId" asp-items="@(new SelectList(Model.Cidades,"Id","Nome"))" class="form-control"></select>-->
                     <span asp-validation-for="Usuario.CidadeId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Selecione o tipo de sua moradia:</label>
+                    <label class="control-label">*Selecione o tipo de sua moradia:</label>
                     <label><input asp-for="Usuario.Moradia" value="Casa" type="radio" />Casa</label>
                     <label><input asp-for="Usuario.Moradia" value="Apartamento" type="radio" />Apartamento</label>
                     <span asp-validation-for="Usuario.Moradia" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Você possui telas nas saídas de sua residência(portas, janelas)?</label>
+                    <label class="control-label">*Você possui telas nas saídas de sua residência(portas, janelas)?</label>
                     <label><input asp-for="Usuario.Protecao" value="Sim" type="radio" />Sim</label>
                     <label><input asp-for="Usuario.Protecao" value="Não" type="radio" />Não</label>
                     <span asp-validation-for="Usuario.Protecao" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Quantos animais você possui em sua residência?</label>
+                    <label class="control-label">*Quantos animais você possui em sua residência?</label>
                     <input asp-for="Usuario.QtAnimais" class="form-control" />
                     <span asp-validation-for="Usuario.QtAnimais" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label style="display: block">Sobre mim:</label>
+                    <textarea asp-for="Usuario.Bio" rows="8" cols="160"></textarea>
+                    <span asp-validation-for="Usuario.Bio" class="text-danger"></span>
                 </div>
                 <button type="submit" class="btn btn-primary">Register</button>
             </div>
         </form>
     </div>
 </div>
+
+<script src="~/lib/jquery-mask-plugin/src/jquery.mask.js" type="text/javascript" asp-append-version="true"></script>
+<script>
+    $('#telefone').mask('(00) 00000-0000', { placeholder: "(51) 99999-9999" });
+
+</script>
+
+

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using TCC.Models;
 using TCC.Models.ViewModels;
 using TCC.Services;
@@ -41,7 +39,7 @@ namespace TCC.Controllers {
         [AllowAnonymous]
         public async Task<IActionResult> IsEmailInUse(string email) {
             var user = await UserManager.FindByEmailAsync(email);
-            if(user == null) {
+            if (user == null) {
                 return Json(true);
             } else {
                 return Json($"Email {email} já está em uso");
@@ -62,12 +60,13 @@ namespace TCC.Controllers {
                     Protecao = model.Usuario.Protecao,
                     QtAnimais = model.Usuario.QtAnimais,
                     Cidade = model.Usuario.Cidade,
-                    CidadeId = model.Usuario.CidadeId
+                    CidadeId = model.Usuario.CidadeId,
+                    Bio = model.Usuario.Bio
                 };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
                     await UserManager.AddToRoleAsync(user, "UsuarioNormal");
-                    await SignInManager.SignInAsync(user, isPersistent: false);                    
+                    await SignInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
                 foreach (var error in result.Errors) {
@@ -90,7 +89,7 @@ namespace TCC.Controllers {
                         return Redirect(returnUrl);
                     } else {
                         return RedirectToAction("index", "home");
-                    }                    
+                    }
                 }
                 ModelState.AddModelError(string.Empty, "Login Inválido");
 
@@ -112,6 +111,7 @@ namespace TCC.Controllers {
             }
             return View(obj);
         }
+               
         [AllowAnonymous]
         public IActionResult Error(string message) {
             var viewModel = new ErrorViewModel {
@@ -124,6 +124,50 @@ namespace TCC.Controllers {
         [AllowAnonymous]
         public IActionResult AccessDenied() {
             return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditUser(string id) {
+            var user = await UserManager.FindByIdAsync(id);
+            if(user == null) {
+                return View("Usuário não encontrado");
+            }
+            var userClaims = await UserManager.GetClaimsAsync(user);
+            var userRoles = await UserManager.GetRolesAsync(user);
+            var cidades = await _CidadeService.FindAllAsync();
+            var model = new EditarUsuarioViewModel {
+                Id = user.Id,
+                Email = user.Email,
+                Claims = userClaims.Select(c => c.Value).ToList(),
+                Roles = userRoles
+            };
+            return View(model);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditarUsuarioViewModel model) {
+            var user = await UserManager.FindByIdAsync(model.Id);
+            if (user == null) {
+                return View("Usuário não encontrado");
+            } else {
+                user.Email = model.Email;
+                var result = await UserManager.UpdateAsync(user);
+                if (result.Succeeded) {
+                    return RedirectToAction("Index");
+                }
+                return View(model);
+            }
+        }
+
+        public async Task<IActionResult> DeleteUser(string id) {
+            var user = await UserManager.FindByIdAsync(id);
+            var result = await UserManager.DeleteAsync(user);
+            if (result.Succeeded) {
+                return RedirectToAction("Index");
+            }
+            return View("Index");
         }
     }
 }
