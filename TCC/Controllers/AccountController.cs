@@ -65,7 +65,7 @@ namespace TCC.Controllers {
                 };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
-                    await UserManager.AddToRoleAsync(user, "UsuarioNormal");
+                    await UserManager.AddToRoleAsync(user, "Usuario");
                     await SignInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
@@ -159,15 +159,6 @@ namespace TCC.Controllers {
                 }
                 return View(model);
             }
-        }
-
-        public async Task<IActionResult> DeleteUser(string id) {
-            var user = await UserManager.FindByIdAsync(id);
-            var result = await UserManager.DeleteAsync(user);
-            if (result.Succeeded) {
-                return RedirectToAction("Index");
-            }
-            return View("Index");
-        }
+        }        
     }
 }
