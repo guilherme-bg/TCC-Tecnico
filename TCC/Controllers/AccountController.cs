@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,14 +17,18 @@ namespace TCC.Controllers {
         private readonly UsuarioService _UsuarioService;
         private readonly TCCContext _TccContext;
         private readonly RoleManager<IdentityRole> RoleManager;
-        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, TCCContext tccContext, RoleManager<IdentityRole> roleManager) {
+        private readonly ILogger<AccountController> Logger;
+
+        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, TCCContext tccContext, RoleManager<IdentityRole> roleManager, ILogger<AccountController> logger) {
             UserManager = userManager;
             SignInManager = signInManager;
             _CidadeService = cidadeService;
             _UsuarioService = usuarioService;
             _TccContext = tccContext;
             RoleManager = roleManager;
+            Logger = logger;
         }
+
         [HttpPost]
         public async Task<IActionResult> Logout() {
             await SignInManager.SignOutAsync();
@@ -35,6 +40,7 @@ namespace TCC.Controllers {
             var model = new RegistrarUsuarioFormViewModel { Cidades = cidades };
             return View(model);
         }
+
         [AcceptVerbs("Get", "Post")]
         [AllowAnonymous]
         public async Task<IActionResult> IsEmailInUse(string email) {
@@ -45,6 +51,7 @@ namespace TCC.Controllers {
                 return Json($"Email {email} já está em uso");
             }
         }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegistrarUsuarioFormViewModel model) {
@@ -65,9 +72,14 @@ namespace TCC.Controllers {
                 };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
-                    await UserManager.AddToRoleAsync(user, "Usuario");
-                    await SignInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("index", "home");
+                    var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action("ConfirmEmail","Account", new { userId = user.Id, token = token }, Request.Scheme);
+                    Logger.Log(LogLevel.Warning, confirmationLink);
+                    if(SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
+                        return RedirectToAction("ListUsers", "Administration");
+                    }
+                    await UserManager.AddToRoleAsync(user, "Usuario");                    
+                    return View("AfterRegister");
                 }
                 foreach (var error in result.Errors) {
                     ModelState.AddModelError("", error.Description);
@@ -75,14 +87,36 @@ namespace TCC.Controllers {
             }
             return View(model);
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token) {
+            if(userId == null || token == null) {
+                return RedirectToAction("index", "home");
+            }
+            var user = await UserManager.FindByIdAsync(userId);
+            var result = await UserManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded) {
+                await SignInManager.SignInAsync(user, true);
+                return View();
+            }
+            return View("Login");
+        }
+
         [AllowAnonymous]
         public IActionResult Login() {
             return View();
         }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl) {
+            
             if (ModelState.IsValid) {
+                var user = await UserManager.FindByEmailAsync(model.Email);
+                if (user != null && !user.EmailConfirmed && (await UserManager.CheckPasswordAsync(user, model.Password))) {
+                    ModelState.AddModelError(string.Empty, "Este email não foi confirmado ainda!");
+                    return View(model);
+                }
                 var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded) {
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) {
@@ -91,8 +125,29 @@ namespace TCC.Controllers {
                         return RedirectToAction("index", "home");
                     }
                 }
-                ModelState.AddModelError(string.Empty, "Login Inválido");
+                ModelState.AddModelError(string.Empty, "Email ou senha incorreto");
 
+            }
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> ForgotPassword() {
+           return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model) {
+            if (ModelState.IsValid) {
+                var user = await UserManager.FindByEmailAsync(model.Email);
+                if(user != null && await UserManager.IsEmailConfirmedAsync(user)) {
+                    var token = await UserManager.GeneratePasswordResetTokenAsync(user);
+                    var passwordResetLink = Url.Action("ResetPassword", "Account", new { emai = model.Email, token = token }, Request.Scheme);
+                    Logger.Log(LogLevel.Warning, passwordResetLink);
+                    return View("ForgotPasswordConfirmation");
+                }
+                return View("ForgotPasswordConfirmation");
             }
             return View(model);
         }
@@ -101,6 +156,7 @@ namespace TCC.Controllers {
             var list = await _UsuarioService.FindAllAsync();
             return View(list);
         }
+
         public async Task<IActionResult> Details(string id) {
             if (id == null) {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
@@ -143,8 +199,7 @@ namespace TCC.Controllers {
             };
             return View(model);
         }
-
-
+        
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> EditUser(EditarUsuarioViewModel model) {
