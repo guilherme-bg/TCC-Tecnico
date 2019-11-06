@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using TCC.Models;
 using TCC.Models.ViewModels;
@@ -18,8 +20,9 @@ namespace TCC.Controllers {
         private readonly TCCContext _TccContext;
         private readonly RoleManager<IdentityRole> RoleManager;
         private readonly ILogger<AccountController> Logger;
+        private readonly IEmailSender _EmailSender;
 
-        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, TCCContext tccContext, RoleManager<IdentityRole> roleManager, ILogger<AccountController> logger) {
+        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, TCCContext tccContext, RoleManager<IdentityRole> roleManager, ILogger<AccountController> logger, IEmailSender emailSender) {
             UserManager = userManager;
             SignInManager = signInManager;
             _CidadeService = cidadeService;
@@ -27,6 +30,7 @@ namespace TCC.Controllers {
             _TccContext = tccContext;
             RoleManager = roleManager;
             Logger = logger;
+            _EmailSender = emailSender;
         }
 
         [HttpPost]
@@ -70,6 +74,7 @@ namespace TCC.Controllers {
                     CidadeId = model.Usuario.CidadeId,
                     Bio = model.Usuario.Bio
                 };
+                
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
                     var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -78,7 +83,9 @@ namespace TCC.Controllers {
                     if(SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
                         return RedirectToAction("ListUsers", "Administration");
                     }
-                    await UserManager.AddToRoleAsync(user, "Usuario");                    
+                    await UserManager.AddToRoleAsync(user, "Usuario");
+                    await _EmailSender.SendEmailAsync(model.Email, "Confirme o seu Email",
+                    $"Por favor confirme o seu email <a href='{HtmlEncoder.Default.Encode(confirmationLink)}'>clicando aqui</a>.");
                     return View("AfterRegister");
                 }
                 foreach (var error in result.Errors) {
@@ -131,12 +138,12 @@ namespace TCC.Controllers {
             return View(model);
         }
 
-        [AllowAnonymous]
+        /*[AllowAnonymous]
         public async Task<ActionResult> ForgotPassword() {
            return View();
-        }
+        }*/
 
-        [HttpPost]
+        /*[HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model) {
             if (ModelState.IsValid) {
@@ -150,7 +157,7 @@ namespace TCC.Controllers {
                 return View("ForgotPasswordConfirmation");
             }
             return View(model);
-        }
+        }*/
 
         public async Task<IActionResult> Index() {
             var list = await _UsuarioService.FindAllAsync();
@@ -214,6 +221,22 @@ namespace TCC.Controllers {
                 }
                 return View(model);
             }
-        }        
+        }
+
+        /*[Authorize]
+        [HttpGet]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model) {
+            var user = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+            var userClaims = await UserManager.GetClaimsAsync(user);
+            var userRoles = await UserManager.GetRolesAsync(user);
+            var cidades = await _CidadeService.FindAllAsync();
+            var profile = new EditProfileViewModel {
+                Id = user.Id,
+                Usuario = user,
+                Cidades = cidades
+            };
+            return View(model);
+        }*/
+
     }
 }
