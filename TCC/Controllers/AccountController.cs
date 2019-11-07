@@ -77,15 +77,15 @@ namespace TCC.Controllers {
                 
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
-                    var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-                    var confirmationLink = Url.Action("ConfirmEmail","Account", new { userId = user.Id, token = token }, Request.Scheme);
+                    var emailtoken = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action("ConfirmEmail","Account", new {userId = user.Id, token = emailtoken}, Request.Scheme);
                     Logger.Log(LogLevel.Warning, confirmationLink);
                     if(SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
                         return RedirectToAction("ListUsers", "Administration");
                     }
                     await UserManager.AddToRoleAsync(user, "Usuario");
                     await _EmailSender.SendEmailAsync(model.Email, "Confirme o seu Email",
-                    $"Por favor confirme o seu email <a href='{HtmlEncoder.Default.Encode(confirmationLink)}'>clicando aqui</a>.");
+                    $"Por favor confirme o seu email <a href='{confirmationLink}'>clicando aqui</a>.");
                     return View("AfterRegister");
                 }
                 foreach (var error in result.Errors) {
@@ -96,11 +96,13 @@ namespace TCC.Controllers {
         }
 
         [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string token) {
-            if(userId == null || token == null) {
-                return RedirectToAction("index", "home");
-            }
             var user = await UserManager.FindByIdAsync(userId);
+            if (user == null) {
+                return View("EmailConfirmationFailed");
+            }
+            token = token.Replace("%2f", "/").Replace("%2F", "/");
             var result = await UserManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded) {
                 await SignInManager.SignInAsync(user, true);
