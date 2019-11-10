@@ -8,7 +8,7 @@ namespace TCC.Models.ViewModels
     public class RegistrarUsuarioFormViewModel {
         [Required]
         [EmailAddress]
-        [Remote(action: "IsEmailInUse", controller: "Account")]
+        [Remote(action: "IsEmailInUse", controller: "Account", ErrorMessage = "O email já está em uso")]
         public string Email { get; set; }
 
         [Required]
@@ -16,9 +16,9 @@ namespace TCC.Models.ViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "Confirmar senha")]
         [Compare("Password",
-            ErrorMessage = "Password and confirmation password do not match.")]
+            ErrorMessage = "As duas senhas devem ser iguais")]
         public string ConfirmPassword { get; set; }
 
         public Usuario Usuario { get; set; }

@@ -74,13 +74,13 @@ namespace TCC.Controllers {
                     CidadeId = model.Usuario.CidadeId,
                     Bio = model.Usuario.Bio
                 };
-                
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
                     var emailtoken = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-                    var confirmationLink = Url.Action("ConfirmEmail","Account", new {userId = user.Id, token = emailtoken}, Request.Scheme);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = emailtoken }, Request.Scheme);
                     Logger.Log(LogLevel.Warning, confirmationLink);
-                    if(SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
+                    if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
                         return RedirectToAction("ListUsers", "Administration");
                     }
                     await UserManager.AddToRoleAsync(user, "Usuario");
@@ -119,7 +119,7 @@ namespace TCC.Controllers {
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl) {
-            
+
             if (ModelState.IsValid) {
                 var user = await UserManager.FindByEmailAsync(model.Email);
                 if (user != null && !user.EmailConfirmed && (await UserManager.CheckPasswordAsync(user, model.Password))) {
@@ -140,26 +140,54 @@ namespace TCC.Controllers {
             return View(model);
         }
 
-        /*[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult> ForgotPassword() {
-           return View();
-        }*/
+            return View();
+        }
 
-        /*[HttpPost]
+        [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model) {
             if (ModelState.IsValid) {
                 var user = await UserManager.FindByEmailAsync(model.Email);
-                if(user != null && await UserManager.IsEmailConfirmedAsync(user)) {
+                if (user != null && await UserManager.IsEmailConfirmedAsync(user)) {
                     var token = await UserManager.GeneratePasswordResetTokenAsync(user);
-                    var passwordResetLink = Url.Action("ResetPassword", "Account", new { emai = model.Email, token = token }, Request.Scheme);
+                    var passwordResetLink = Url.Action("ResetPassword", "Account", new { userId = user.Id, token = token }, Request.Scheme);
                     Logger.Log(LogLevel.Warning, passwordResetLink);
+                    await _EmailSender.SendEmailAsync(model.Email, "Redefinição de senha", $"Redefina sua senha <a href='{passwordResetLink}'>clicando aqui</a>.");
                     return View("ForgotPasswordConfirmation");
                 }
                 return View("ForgotPasswordConfirmation");
             }
             return View(model);
-        }*/
+        }
+
+        [AllowAnonymous]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model) {
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> ResetPassword(string userId, string token, ResetPasswordViewModel model) {
+            var user = await UserManager.FindByIdAsync(userId);
+            token = token.Replace("%2f", "/").Replace("%2F", "/");
+            if (user == null || token == null) {
+                return View("InvalidPasswordReset");
+            }
+            if (ModelState.IsValid) {
+                if (user != null && await UserManager.IsEmailConfirmedAsync(user)) {
+                    var result = await UserManager.ResetPasswordAsync(user, token, model.newPassword);
+                    if (result.Succeeded) {
+                        await SignInManager.SignInAsync(user, true);
+                        return View("PasswordResetSuccess");
+                    }
+                } else {
+                    return View("EmailConfirmationFailed");
+                }                               
+            }
+            return View("index", "home");
+        }
 
         public async Task<IActionResult> Index() {
             var list = await _UsuarioService.FindAllAsync();
@@ -176,7 +204,7 @@ namespace TCC.Controllers {
             }
             return View(obj);
         }
-               
+
         [AllowAnonymous]
         public IActionResult Error(string message) {
             var viewModel = new ErrorViewModel {
@@ -194,7 +222,7 @@ namespace TCC.Controllers {
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUser(string id) {
             var user = await UserManager.FindByIdAsync(id);
-            if(user == null) {
+            if (user == null) {
                 return View("Usuário não encontrado");
             }
             var userClaims = await UserManager.GetClaimsAsync(user);
@@ -208,7 +236,7 @@ namespace TCC.Controllers {
             };
             return View(model);
         }
-        
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> EditUser(EditarUsuarioViewModel model) {
