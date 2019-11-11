@@ -1,4 +1,6 @@
-﻿@inject SignInManager<Usuario> signInManager
+﻿
+@inject SignInManager<Usuario> signInManager
+@inject UserManager<Usuario> userManager
 
 <!DOCTYPE html>
 <html>
@@ -48,7 +50,8 @@
                     </ul>
                 <ul class="nav navbar-nav pull-right">
                     @if (signInManager.IsSignedIn(User)) {
-                        <li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Profile" class="btn btn-primary">Ver Perfil</a></li>
+                        <li>                            
                             <form method="post" asp-action="Logout" asp-controller="Account">
                                 <button type="submit" class="navbar-link btn btn-link py-0" style="width:auto">
                                     Logout @User.Identity.Name

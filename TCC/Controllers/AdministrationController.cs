@@ -144,7 +144,6 @@ namespace TCC.Controllers {
             }
             var userClaims = await UserManager.GetClaimsAsync(user);
             var userRoles = await UserManager.GetRolesAsync(user);
-            var cidades = await _CidadeService.FindAllAsync();
             var model = new EditarUsuarioViewModel {
                 Id = user.Id,
                 Email = user.Email,

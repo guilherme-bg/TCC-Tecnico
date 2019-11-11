@@ -1,0 +1,68 @@
+﻿@model Usuario
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h2>Meu Perfil</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Telefone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Telefone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cidade)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cidade.Nome)
+        </dd>
+        <dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Moradia)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Moradia)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Protecao)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Protecao)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.QtAnimais)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.QtAnimais)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Bio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Bio)
+        </dd>
+
+    </dl>
+</div>
+<div>
+    <a asp-action="EditProfile" asp-controller="Account" asp-route-id="@Model.Id" class="btn btn-primary">Editar perfil</a>
+    <a asp-action="Index" asp-controller="Home" class="btn btn-danger">Sair do perfil</a>
+    
+</div>

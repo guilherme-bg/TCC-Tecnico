@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using TCC.Models;
@@ -17,18 +18,17 @@ namespace TCC.Controllers {
         private readonly SignInManager<Usuario> SignInManager;
         private readonly CidadeService _CidadeService;
         private readonly UsuarioService _UsuarioService;
-        private readonly TCCContext _TccContext;
-        private readonly RoleManager<IdentityRole> RoleManager;
+
         private readonly ILogger<AccountController> Logger;
         private readonly IEmailSender _EmailSender;
 
-        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, TCCContext tccContext, RoleManager<IdentityRole> roleManager, ILogger<AccountController> logger, IEmailSender emailSender) {
+        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, ILogger<AccountController> logger, IEmailSender emailSender) {
             UserManager = userManager;
             SignInManager = signInManager;
             _CidadeService = cidadeService;
             _UsuarioService = usuarioService;
-            _TccContext = tccContext;
-            RoleManager = roleManager;
+
+
             Logger = logger;
             _EmailSender = emailSender;
         }
@@ -37,12 +37,6 @@ namespace TCC.Controllers {
         public async Task<IActionResult> Logout() {
             await SignInManager.SignOutAsync();
             return RedirectToAction("index", "home");
-        }
-        [AllowAnonymous]
-        public async Task<IActionResult> Register() {
-            var cidades = await _CidadeService.FindAllAsync();
-            var model = new RegistrarUsuarioFormViewModel { Cidades = cidades };
-            return View(model);
         }
 
         [AcceptVerbs("Get", "Post")]
@@ -55,6 +49,14 @@ namespace TCC.Controllers {
                 return Json($"Email {email} já está em uso");
             }
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Register() {
+            var cidades = await _CidadeService.FindAllAsync();
+            var model = new RegistrarUsuarioFormViewModel { Cidades = cidades };
+            return View(model);
+        }
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -141,7 +143,7 @@ namespace TCC.Controllers {
         }
 
         [AllowAnonymous]
-        public async Task<ActionResult> ForgotPassword() {
+        public ActionResult ForgotPassword() {
             return View();
         }
 
@@ -163,7 +165,7 @@ namespace TCC.Controllers {
         }
 
         [AllowAnonymous]
-        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model) {
+        public ActionResult ResetPassword(ResetPasswordViewModel model) {
             return View(model);
         }
 
@@ -184,7 +186,7 @@ namespace TCC.Controllers {
                     }
                 } else {
                     return View("EmailConfirmationFailed");
-                }                               
+                }
             }
             return View("index", "home");
         }
@@ -219,54 +221,60 @@ namespace TCC.Controllers {
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EditUser(string id) {
-            var user = await UserManager.FindByIdAsync(id);
-            if (user == null) {
-                return View("Usuário não encontrado");
-            }
-            var userClaims = await UserManager.GetClaimsAsync(user);
-            var userRoles = await UserManager.GetRolesAsync(user);
-            var cidades = await _CidadeService.FindAllAsync();
-            var model = new EditarUsuarioViewModel {
+        [Authorize]
+        public async Task<IActionResult> Profile() {
+            var userId = UserManager.GetUserId(HttpContext.User);
+            var user = await _UsuarioService.FindByIdAsync(userId);
+            return View(user);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> EditProfile() {
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            var model = new EditProfileViewModel {
                 Id = user.Id,
-                Email = user.Email,
-                Claims = userClaims.Select(c => c.Value).ToList(),
-                Roles = userRoles
+                Cidades = await _CidadeService.FindAllAsync(),
+                Nome = user.Nome,
+                Telefone = user.Telefone,
+                Moradia = user.Moradia,
+                Protecao = user.Protecao,
+                QtAnimais = user.QtAnimais,
+                CidadeUser = user.Cidade,
+                CidadeId = user.CidadeId,
+                Bio = user.Bio
             };
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> EditUser(EditarUsuarioViewModel model) {
-            var user = await UserManager.FindByIdAsync(model.Id);
-            if (user == null) {
-                return View("Usuário não encontrado");
-            } else {
-                user.Email = model.Email;
-                var result = await UserManager.UpdateAsync(user);
-                if (result.Succeeded) {
-                    return RedirectToAction("Index");
-                }
-                return View(model);
-            }
-        }
-
-        /*[Authorize]
-        [HttpGet]
         public async Task<IActionResult> EditProfile(EditProfileViewModel model) {
-            var user = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
-            var userClaims = await UserManager.GetClaimsAsync(user);
-            var userRoles = await UserManager.GetRolesAsync(user);
-            var cidades = await _CidadeService.FindAllAsync();
-            var profile = new EditProfileViewModel {
-                Id = user.Id,
-                Usuario = user,
-                Cidades = cidades
-            };
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            model.Cidades = await _CidadeService.FindAllAsync();
+            if (user == null) {
+                ViewBag.ErrorMessage = $"Usuário não encontrado";
+                return View("NotFound");
+            } else {
+                if (ModelState.IsValid) {
+                    user.Nome = model.Nome;
+                    user.Telefone = model.Telefone;
+                    user.Moradia = model.Moradia;
+                    user.Protecao = model.Protecao;
+                    user.QtAnimais = model.QtAnimais;
+                    user.Cidade = model.CidadeUser;
+                    user.CidadeId = model.CidadeId;
+                    user.Bio = model.Bio;
+                    var result = await UserManager.UpdateAsync(user);
+                    if (result.Succeeded) {
+                        return RedirectToAction("Profile");
+                    }
+                    foreach (var error in result.Errors) {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
             return View(model);
-        }*/
+        }
 
     }
 }
