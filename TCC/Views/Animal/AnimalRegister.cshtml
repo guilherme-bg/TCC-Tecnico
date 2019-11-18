@@ -1,0 +1,86 @@
+﻿@model TCC.Models.ViewModels.RegistrarAnimalFormViewModel
+@{
+    ViewData["Title"] = "Registrar Animal";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form enctype="multipart/form-data" method="post">
+    <div class="form-group">
+        <label>Espécie</label>
+        <select asp-for="Animal.Especie" onchange="java_script_: animaltipo(this.options[this.selectedIndex].value)">
+            <option selected value="" disabled hidden>---SELECIONE A ESPÉCIE--</option>
+            <option value="Cachorro">Cachorro</option>
+            <option value="Gato">Gato</option>
+        </select>
+        <span asp-validation-for="Animal.Especie" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Sexo:</label>
+        <select asp-for="Animal.Sexo">
+            <option selected value="" disabled hidden>---SELECIONE O SEXO--</option>
+            <option value="Macho">Macho</option>
+            <option value="Fêmea">Fêmea</option>
+        </select>
+        <span asp-validation-for="Animal.Sexo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <span class="glyphicon glyphicon-picture"></span>
+        <label asp-for="Animal.Foto"></label>
+        <input type="file" asp-for="Animal.Foto" class="file" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Animal.Nome"></label>
+        <input asp-for="Animal.Nome" class="form-control" />
+        <span asp-validation-for="Animal.Nome" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Animal.Porte"></label>
+        <select asp-for="Animal.Porte">
+            <option selected value="" disabled hidden>---SELECIONE O PORTE--</option>
+            <option value="Pequeno">Pequeno</option>
+            <option value="Médio">Médio</option>
+            <option value="Grande">Grande</option>
+        </select>
+        <span asp-validation-for="Animal.Porte" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Animal.Saude"></label><br />
+        <input type="checkbox" asp-for="Animal.Saude" value="Castrado," />Castrado<br />
+        <input type="checkbox" asp-for="Animal.Saude" value="Vermifugado," />Vermifugado<br />
+        <div id="cachorro" style="display:none">
+            <label>Vacinas:</label><br />
+            <input type="checkbox" asp-for="Animal.Saude" value="V8," />V8<br />
+            <input type="checkbox" asp-for="Animal.Saude" value="V10," />V10<br />
+            <input type="checkbox" asp-for="Animal.Saude" value="Antirrábica," />Antirrábica<br />
+        </div>
+        <div id="gato" style="display:none">
+            <label>Vacinas:</label><br />
+            <input type="checkbox" asp-for="Animal.Saude" value="V3," />V3<br />
+            <input type="checkbox" asp-for="Animal.Saude" value="V4," />V4<br />
+            <input type="checkbox" asp-for="Animal.Saude" value="V5," />V5<br />
+        </div>
+        <div class="form-group">
+            <label style="display: block" asp-for="Animal.Obs"></label>
+            <textarea asp-for="Animal.Obs" rows="3" cols="160" placeholder="Obs:...."></textarea>            
+        </div>
+    </div>
+    <div class="form-group">
+        <label style="display: block">Sobre o amiguinho:</label>
+        <textarea asp-for="Animal.Descricao" placeholder="Sobre mim...." rows="8" cols="160"></textarea>
+        <span asp-validation-for="Animal.Descricao" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Cadastrar Animal</button>
+    <a asp-action="Index" asp-controller="Home" class="btn btn-danger">Cancelar</a>
+</form>
+
+<script>
+    function animaltipo(animal) {
+    if (animal == "Cachorro") {
+        cachorro.style.display = 'inline';
+        gato.style.display = 'none';
+    } else if(animal == "Gato") {
+        gato.style.display = 'inline';
+        cachorro.style.display = 'none';
+    }
+}
+</script>

@@ -9,8 +9,8 @@ using TCC.Models;
 namespace TCC.Migrations
 {
     [DbContext(typeof(TCCContext))]
-    [Migration("20191007190147_IdentityUserExtended")]
-    partial class IdentityUserExtended
+    [Migration("20191118011642_Animal")]
+    partial class Animal
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -125,6 +125,41 @@ namespace TCC.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("TCC.Models.Animal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Data_Cadastro");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired();
+
+                    b.Property<string>("Especie")
+                        .IsRequired();
+
+                    b.Property<string>("Foto");
+
+                    b.Property<string>("Nome")
+                        .IsRequired();
+
+                    b.Property<string>("Porte")
+                        .IsRequired();
+
+                    b.Property<string>("Saude");
+
+                    b.Property<string>("Sexo")
+                        .IsRequired();
+
+                    b.Property<string>("UsuarioId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Animal");
+                });
+
             modelBuilder.Entity("TCC.Models.Cidade", b =>
                 {
                     b.Property<int>("Id")
@@ -143,6 +178,9 @@ namespace TCC.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(1000);
 
                     b.Property<int>("CidadeId");
 
@@ -251,10 +289,17 @@ namespace TCC.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("TCC.Models.Animal", b =>
+                {
+                    b.HasOne("TCC.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+                });
+
             modelBuilder.Entity("TCC.Models.Usuario", b =>
                 {
                     b.HasOne("TCC.Models.Cidade", "Cidade")
-                        .WithMany("Usuarios")
+                        .WithMany()
                         .HasForeignKey("CidadeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

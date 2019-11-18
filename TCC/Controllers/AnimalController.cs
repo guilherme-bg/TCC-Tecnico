@@ -31,7 +31,9 @@ namespace TCC.Controllers {
             var list = await _AnimalService.FinAllAsync();
             return View(list);
         }
-        /*public async Task<IActionResult> Register(RegistrarAnimalFormViewModel){
-        }*/
+        public async Task<IActionResult> AnimalRegister(){
+            RegistrarAnimalFormViewModel model = new RegistrarAnimalFormViewModel();
+            return View(model);
+        }
     }
 }

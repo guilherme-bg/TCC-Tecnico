@@ -13,5 +13,4 @@ function confimarDeletar(uniqueId, foiConfirmado) {
         $('#' + deletar).show();
         $('#' + confirmarDeletar).hide();
     }
-
 }

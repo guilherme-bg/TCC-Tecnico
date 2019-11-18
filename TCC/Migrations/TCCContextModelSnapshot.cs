@@ -136,25 +136,26 @@ namespace TCC.Migrations
                     b.Property<string>("Especie")
                         .IsRequired();
 
+                    b.Property<string>("Foto");
+
                     b.Property<string>("Nome")
                         .IsRequired();
+
+                    b.Property<string>("Obs");
 
                     b.Property<string>("Porte")
                         .IsRequired();
 
-                    b.Property<string>("Saude")
-                        .IsRequired();
+                    b.Property<string>("Saude");
 
                     b.Property<string>("Sexo")
                         .IsRequired();
 
-                    b.Property<int>("UsuarioId");
-
-                    b.Property<string>("UsuarioId1");
+                    b.Property<string>("UsuarioId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioId1");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Animal");
                 });
@@ -292,7 +293,7 @@ namespace TCC.Migrations
                 {
                     b.HasOne("TCC.Models.Usuario", "Usuario")
                         .WithMany()
-                        .HasForeignKey("UsuarioId1");
+                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("TCC.Models.Usuario", b =>

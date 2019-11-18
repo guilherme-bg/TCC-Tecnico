@@ -9,8 +9,8 @@ using TCC.Models;
 namespace TCC.Migrations
 {
     [DbContext(typeof(TCCContext))]
-    [Migration("20191008190206_Animais")]
-    partial class Animais
+    [Migration("20191118022813_Animal_obs")]
+    partial class Animal_obs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -138,25 +138,26 @@ namespace TCC.Migrations
                     b.Property<string>("Especie")
                         .IsRequired();
 
+                    b.Property<string>("Foto");
+
                     b.Property<string>("Nome")
                         .IsRequired();
+
+                    b.Property<string>("Obs");
 
                     b.Property<string>("Porte")
                         .IsRequired();
 
-                    b.Property<string>("Saude")
-                        .IsRequired();
+                    b.Property<string>("Saude");
 
                     b.Property<string>("Sexo")
                         .IsRequired();
 
-                    b.Property<int>("UsuarioId");
-
-                    b.Property<string>("UsuarioId1");
+                    b.Property<string>("UsuarioId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioId1");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Animal");
                 });
@@ -179,6 +180,9 @@ namespace TCC.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("Bio")
+                        .HasMaxLength(1000);
 
                     b.Property<int>("CidadeId");
 
@@ -291,13 +295,13 @@ namespace TCC.Migrations
                 {
                     b.HasOne("TCC.Models.Usuario", "Usuario")
                         .WithMany()
-                        .HasForeignKey("UsuarioId1");
+                        .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("TCC.Models.Usuario", b =>
                 {
                     b.HasOne("TCC.Models.Cidade", "Cidade")
-                        .WithMany("Usuarios")
+                        .WithMany()
                         .HasForeignKey("CidadeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
