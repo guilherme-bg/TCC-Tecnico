@@ -35,7 +35,7 @@ namespace TCC.Models {
         public Animal() {
         }
 
-        public Animal(int id, string nome, string especie, string sexo, string porte, string saude, string descricao, DateTime data_Cadastro, Usuario usuario, string usuarioId, string obs) {
+        public Animal(int id, string nome, string especie, string sexo, string porte, string saude, string descricao, DateTime data_Cadastro, Usuario usuario, string usuarioId, string obs, string foto) {
             Id = id;
             Nome = nome;
             Especie = especie;
@@ -47,6 +47,7 @@ namespace TCC.Models {
             Usuario = usuario;
             UsuarioId = usuarioId;
             Obs = obs;
+            Foto = foto;
         }
     }
 }

@@ -41,13 +41,14 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">Sobre</a></li>
+                    <li><a asp-area="" asp-controller="Animal" asp-action="Index">Animais</a></li>
                     @if (signInManager.IsSignedIn(User) && (User.IsInRole("Admin") || User.IsInRole("Moderador"))) {
                         <li><a asp-area="" asp-controller="Administration" asp-action="ListUsers">Usuarios</a></li>
                     }
-                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
-                            <li><a asp-area="" asp-controller="Administration" asp-action="Index">Níveis de Conta</a></li>
-                        }
-                    </ul>
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
+                        <li><a asp-area="" asp-controller="Administration" asp-action="Index">Níveis de Conta</a></li>
+                    }
+                </ul>
                 <ul class="nav navbar-nav pull-right">
                     @if (signInManager.IsSignedIn(User)) {
                         <li><a asp-area="" asp-controller="Animal" asp-action="AnimalRegister" class="btn btn-primary">Cadastrar Animal</a></li>

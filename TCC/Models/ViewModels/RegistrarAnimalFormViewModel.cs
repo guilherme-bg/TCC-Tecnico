@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace TCC.Models.ViewModels {
     public class RegistrarAnimalFormViewModel {
         public IFormFile Fotos { get; set; }
-        public Animal Animal{ get; set; } 
-        public Usuario Usuario { get; set; }
+        public Animal Animal{ get; set; }
     }
 }
