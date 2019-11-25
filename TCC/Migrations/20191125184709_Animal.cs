@@ -7,8 +7,7 @@ namespace TCC.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
-            migrationBuilder.CreateTable(
+           migrationBuilder.CreateTable(
                 name: "Animal",
                 columns: table => new
                 {
@@ -21,6 +20,7 @@ namespace TCC.Migrations
                     Porte = table.Column<string>(nullable: false),
                     Saude = table.Column<string>(nullable: true),
                     Descricao = table.Column<string>(nullable: false),
+                    Obs = table.Column<string>(nullable: true),
                     Data_Cadastro = table.Column<DateTime>(nullable: false),
                     UsuarioId = table.Column<string>(nullable: true)
                 },
@@ -34,19 +34,10 @@ namespace TCC.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-            
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Animal_UsuarioId",
-                table: "Animal",
-                column: "UsuarioId");
-
-            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            
+        {            
         }
     }
 }

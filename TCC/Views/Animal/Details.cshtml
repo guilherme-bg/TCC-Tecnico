@@ -1,0 +1,57 @@
+﻿@model Animal
+
+<h2>@Model.Nome</h2>
+
+@{
+    var photoPath = "~/images/" + (Model.Foto ?? "noimage.jpg");
+    
+}
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dd>
+            <img class="img-thumbnail" style="width:500px; height:400px" src="@photoPath" asp-append-version="true" />
+        </dd>
+        <dt>
+            @Html.DisplayFor(model => model.Sexo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Sexo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Porte)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Porte)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Saude)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Saude)
+        </dd>
+        <dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Obs)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Obs)
+        </dd>
+        <dt>
+            @Html.DisplayFor(model => model.Usuario)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Usuario.Nome)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Descricao)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Descricao)
+        </dd>
+    </dl>
+    <div>
+        <a asp-action="Index" asp-controller="Animal" class="btn btn-danger">Retornar para a lista</a>
+    </div>
+</div>
+

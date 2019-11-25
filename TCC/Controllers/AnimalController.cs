@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using TCC.Models;
 using TCC.Models.ViewModels;
 using TCC.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace TCC.Controllers {
     [Authorize]
@@ -46,30 +47,38 @@ namespace TCC.Controllers {
             var user = await UserManager.GetUserAsync(HttpContext.User);
             if (ModelState.IsValid) {
                 string uniqueFileName = null;
-                if(model.Fotos != null) {
+                if(model.Fotos != null && model.Fotos.Count > 0) {
+                    foreach(IFormFile foto in model.Fotos) {                    
                     string uploadsFolder = Path.Combine(HostingEnvironment.WebRootPath, "images\\");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Nome + "_" + model.Fotos.FileName;
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Nome + "_" + foto.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    await model.Fotos.CopyToAsync(new FileStream(filePath, FileMode.Create));
+                    await foto.CopyToAsync(new FileStream(filePath, FileMode.Create));
+                    }
                 }
                 Animal animal = new Animal {
                     Nome = model.Animal.Nome,
                     Especie = model.Animal.Especie,
                     Porte = model.Animal.Especie,
                     Sexo = model.Animal.Sexo,
-                    Saude = model.Animal.Saude,
+                    Saude = String.Join(",",model.Saude),
                     Foto = uniqueFileName,
                     Descricao = model.Animal.Descricao,
                     Data_Cadastro = DateTime.Now,
                     Obs = model.Animal.Obs,
                     UsuarioId = user.Id,
                     Usuario = user
-                };
+                };                
                 _TccContext.Animal.Add(animal);
-                _TccContext.SaveChanges();
+                animal.Usuario.AddAnimal(animal);
+                _TccContext.SaveChanges();                
                 return RedirectToAction("index","home");
             }
             return View(model);
         }
+        public async Task<IActionResult> Details(int id) {
+            var animal = await _AnimalService.FindByIdAsync(id);
+            return View(animal);
+        }
+
     }
 }

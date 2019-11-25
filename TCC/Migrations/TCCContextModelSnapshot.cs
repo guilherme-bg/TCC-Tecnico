@@ -292,14 +292,14 @@ namespace TCC.Migrations
             modelBuilder.Entity("TCC.Models.Animal", b =>
                 {
                     b.HasOne("TCC.Models.Usuario", "Usuario")
-                        .WithMany()
+                        .WithMany("Animais")
                         .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("TCC.Models.Usuario", b =>
                 {
                     b.HasOne("TCC.Models.Cidade", "Cidade")
-                        .WithMany()
+                        .WithMany("Usuarios")
                         .HasForeignKey("CidadeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

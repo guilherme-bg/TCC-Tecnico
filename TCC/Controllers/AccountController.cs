@@ -76,7 +76,6 @@ namespace TCC.Controllers {
                     CidadeId = model.Usuario.CidadeId,
                     Bio = model.Usuario.Bio
                 };
-
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
                     var emailtoken = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -88,6 +87,7 @@ namespace TCC.Controllers {
                     await UserManager.AddToRoleAsync(user, "Usuario");
                     await _EmailSender.SendEmailAsync(model.Email, "Confirme o seu Email",
                     $"Por favor confirme o seu email <a href='{confirmationLink}'>clicando aqui</a>.");
+                    user.Cidade.AddUsuario(user);
                     return View("AfterRegister");
                 }
                 foreach (var error in result.Errors) {

@@ -9,8 +9,8 @@ using TCC.Models;
 namespace TCC.Migrations
 {
     [DbContext(typeof(TCCContext))]
-    [Migration("20191118022813_Animal_obs")]
-    partial class Animal_obs
+    [Migration("20191125184709_Animal")]
+    partial class Animal
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -294,14 +294,14 @@ namespace TCC.Migrations
             modelBuilder.Entity("TCC.Models.Animal", b =>
                 {
                     b.HasOne("TCC.Models.Usuario", "Usuario")
-                        .WithMany()
+                        .WithMany("Animais")
                         .HasForeignKey("UsuarioId");
                 });
 
             modelBuilder.Entity("TCC.Models.Usuario", b =>
                 {
                     b.HasOne("TCC.Models.Cidade", "Cidade")
-                        .WithMany()
+                        .WithMany("Usuarios")
                         .HasForeignKey("CidadeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

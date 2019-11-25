@@ -31,9 +31,12 @@ namespace TCC.Models
         [Display(Name = "Sobre mim")]
         [StringLength(1000)]
         public string Bio { get; set; }
-
+        public ICollection<Animal> Animais { get; set; } = new List<Animal>();
         public Usuario()
         {            
-        }      
+        }
+        public void AddAnimal(Animal animal) {
+            Animais.Add(animal);
+        }
     }
 }

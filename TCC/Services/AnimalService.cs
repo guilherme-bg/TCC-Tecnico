@@ -16,5 +16,9 @@ namespace TCC.Services {
         public async Task<List<Animal>> FinAllAsync() {
             return await _Context.Animal.OrderBy(x => x.Nome).ToListAsync();
         }
+
+        public async Task<Animal> FindByIdAsync(int id) {
+            return await _Context.Animal.FindAsync(id);
+        }
     }
 }

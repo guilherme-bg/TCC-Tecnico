@@ -26,7 +26,7 @@
     <div class="form-group">
         <span class="glyphicon glyphicon-picture"></span>
         <label asp-for="Fotos"></label>
-        <input class="form-control" asp-for="Fotos" />        
+        <input multiple class="form-control" asp-for="Fotos" />        
     </div>
     <div class="form-group">
         <label class="col-lg-2 control-label" asp-for="Animal.Nome"></label>
@@ -44,20 +44,20 @@
         <span asp-validation-for="Animal.Porte" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="control-label" asp-for="Animal.Saude"></label><br />
-        <input type="checkbox" asp-for="Animal.Saude" value="Castrado," />Castrado<br />
-        <input type="checkbox" asp-for="Animal.Saude" value="Vermifugado," />Vermifugado<br />
+        <label class="control-label" asp-for="Saude"></label><br />
+        <input name="Saude" type="checkbox" value="Castrado" />Castrado<br />
+        <input name="Saude" type="checkbox" value="Vermifugado" />Vermifugado<br />
         <div id="cachorro" style="display:none">
             <label class="control-label">Vacinas:</label><br />
-            <input type="checkbox" asp-for="Animal.Saude" value="V8," />V8<br />
-            <input type="checkbox" asp-for="Animal.Saude" value="V10," />V10<br />
-            <input type="checkbox" asp-for="Animal.Saude" value="Antirrábica," />Antirrábica<br />
+            <input name="Saude" type="checkbox" value="V8" />V8<br />
+            <input name="Saude" type="checkbox" value="V10" />V10<br />
+            <input name="Saude" type="checkbox" value="Antirrábica" />Antirrábica<br />
         </div>
         <div id="gato" style="display:none">
             <label class="control-label">Vacinas:</label><br />
-            <input type="checkbox" asp-for="Animal.Saude" value="V3," />V3<br />
-            <input type="checkbox" asp-for="Animal.Saude" value="V4," />V4<br />
-            <input type="checkbox" asp-for="Animal.Saude" value="V5," />V5<br />
+            <input name="Saude" type="checkbox" value="V3" />V3<br />
+            <input name="Saude" type="checkbox" value="V4" />V4<br />
+            <input name="Saude" type="checkbox" value="V5" />V5<br />
         </div>
         <div class="form-group" style="position:relative; top:10px">
             <label class="col-lg-3 control-label" asp-for="Animal.Obs"></label>
@@ -85,5 +85,6 @@
                 cachorro.style.display = 'none';
             }
         }        
+
     </script>
 }
