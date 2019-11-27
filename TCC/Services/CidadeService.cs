@@ -15,5 +15,9 @@ namespace TCC.Services {
         public async Task<List<Cidade>> FindAllAsync() {
             return await _Context.Cidade.OrderBy(x => x.Nome).ToListAsync();
         }
+
+        public async Task<Cidade> FindByIdAsync(int id) {
+            return await _Context.Cidade.FindAsync(id);
+        }
     }
 }

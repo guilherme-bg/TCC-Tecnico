@@ -9,8 +9,8 @@ using TCC.Models;
 namespace TCC.Migrations
 {
     [DbContext(typeof(TCCContext))]
-    [Migration("20191125184709_Animal")]
-    partial class Animal
+    [Migration("20191126192239_Animal_Cidade")]
+    partial class Animal_Cidade
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -130,6 +130,8 @@ namespace TCC.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("CidadeId");
+
                     b.Property<DateTime>("Data_Cadastro");
 
                     b.Property<string>("Descricao")
@@ -138,7 +140,11 @@ namespace TCC.Migrations
                     b.Property<string>("Especie")
                         .IsRequired();
 
-                    b.Property<string>("Foto");
+                    b.Property<string>("Foto1");
+
+                    b.Property<string>("Foto2");
+
+                    b.Property<string>("Foto3");
 
                     b.Property<string>("Nome")
                         .IsRequired();
@@ -155,7 +161,11 @@ namespace TCC.Migrations
 
                     b.Property<string>("UsuarioId");
 
+                    b.Property<string>("Vacina");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CidadeId");
 
                     b.HasIndex("UsuarioId");
 
@@ -293,6 +303,11 @@ namespace TCC.Migrations
 
             modelBuilder.Entity("TCC.Models.Animal", b =>
                 {
+                    b.HasOne("TCC.Models.Cidade", "Cidade")
+                        .WithMany()
+                        .HasForeignKey("CidadeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("TCC.Models.Usuario", "Usuario")
                         .WithMany("Animais")
                         .HasForeignKey("UsuarioId");

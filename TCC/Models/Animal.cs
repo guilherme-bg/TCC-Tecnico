@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 namespace TCC.Models {
     public class Animal {
         public int Id { get; set; }
-        public string Foto { get; set; }
+        public string Foto1 { get; set; }
+        public string Foto2 { get; set; }
+        public string Foto3 { get; set; }
         [Required]
         [Display(Name = "Nome")]
         public string Nome { get; set; }
@@ -22,6 +24,8 @@ namespace TCC.Models {
         public string Porte { get; set; }
         [Display(Name = "Saúde")]
         public string Saude { get; set; }
+        [Display(Name = "Vacinas")]
+        public string Vacina { get; set; }
         [Required]
         [Display(Name = "Sobre o animal")]
         public string Descricao { get; set; }
@@ -30,24 +34,11 @@ namespace TCC.Models {
         public DateTime Data_Cadastro { get; set; }
         public Usuario Usuario { get; set; }
         public string UsuarioId { get; set; }
+        public int CidadeId { get; set; }
+        public Cidade Cidade { get; set; }
 
 
         public Animal() {
-        }
-
-        public Animal(int id, string nome, string especie, string sexo, string porte, string descricao, DateTime data_Cadastro, Usuario usuario, string usuarioId, string obs, string foto, string saude) {
-            Id = id;
-            Nome = nome;
-            Especie = especie;
-            Sexo = sexo;
-            Porte = porte;
-            Descricao = descricao;
-            Data_Cadastro = data_Cadastro;
-            Usuario = usuario;
-            UsuarioId = usuarioId;
-            Obs = obs;
-            Foto = foto;
-            Saude = saude;
-        }
+        }        
     }
 }

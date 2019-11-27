@@ -26,7 +26,7 @@
     <div class="form-group">
         <span class="glyphicon glyphicon-picture"></span>
         <label asp-for="Fotos"></label>
-        <input multiple class="form-control" asp-for="Fotos" />        
+        <input id="fotos" multiple class="form-control" asp-for="Fotos" onchange="java_script_: ValidateFile($('#fotos'))" />
     </div>
     <div class="form-group">
         <label class="col-lg-2 control-label" asp-for="Animal.Nome"></label>
@@ -49,15 +49,15 @@
         <input name="Saude" type="checkbox" value="Vermifugado" />Vermifugado<br />
         <div id="cachorro" style="display:none">
             <label class="control-label">Vacinas:</label><br />
-            <input name="Saude" type="checkbox" value="V8" />V8<br />
-            <input name="Saude" type="checkbox" value="V10" />V10<br />
-            <input name="Saude" type="checkbox" value="Antirrábica" />Antirrábica<br />
+            <input name="Vacina" type="checkbox" value="V8" />V8<br />
+            <input name="Vacina" type="checkbox" value="V10" />V10<br />
+            <input name="Vacina" type="checkbox" value="Antirrábica" />Antirrábica<br />
         </div>
         <div id="gato" style="display:none">
             <label class="control-label">Vacinas:</label><br />
-            <input name="Saude" type="checkbox" value="V3" />V3<br />
-            <input name="Saude" type="checkbox" value="V4" />V4<br />
-            <input name="Saude" type="checkbox" value="V5" />V5<br />
+            <input name="Vacina" type="checkbox" value="V3" />V3<br />
+            <input name="Vacina" type="checkbox" value="V4" />V4<br />
+            <input name="Vacina" type="checkbox" value="V5" />V5<br />
         </div>
         <div class="form-group" style="position:relative; top:10px">
             <label class="col-lg-3 control-label" asp-for="Animal.Obs"></label>
@@ -84,7 +84,19 @@
                 gato.style.display = 'inline';
                 cachorro.style.display = 'none';
             }
-        }        
+        }
+
+        function ValidateFile(e) {
+            var fileCount = document.getElementById('fotos').files.length;
+
+            if (fileCount > 3)
+            {
+                alert("Insira no máximo 3 imagens do animal!!!");
+                e.wrap('<form>').closest('form').get(0).reset();
+                e.unwrap();
+                return false;
+            } 
+        }
 
     </script>
 }

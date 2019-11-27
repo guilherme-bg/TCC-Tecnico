@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TCC.Models;
 
 namespace TCC.Migrations
 {
     [DbContext(typeof(TCCContext))]
-    partial class TCCContextModelSnapshot : ModelSnapshot
+    [Migration("20191126143233_Animal-Foto")]
+    partial class AnimalFoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,8 +130,6 @@ namespace TCC.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CidadeId");
-
                     b.Property<DateTime>("Data_Cadastro");
 
                     b.Property<string>("Descricao")
@@ -162,8 +162,6 @@ namespace TCC.Migrations
                     b.Property<string>("Vacina");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CidadeId");
 
                     b.HasIndex("UsuarioId");
 
@@ -301,11 +299,6 @@ namespace TCC.Migrations
 
             modelBuilder.Entity("TCC.Models.Animal", b =>
                 {
-                    b.HasOne("TCC.Models.Cidade", "Cidade")
-                        .WithMany()
-                        .HasForeignKey("CidadeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("TCC.Models.Usuario", "Usuario")
                         .WithMany("Animais")
                         .HasForeignKey("UsuarioId");

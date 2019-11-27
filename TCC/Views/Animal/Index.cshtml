@@ -1,31 +1,28 @@
 ﻿@model IEnumerable<Animal>
+@inject TCC.Services.CidadeService _cidade
 
 @{
     ViewData["Title"] = "Index";
 }
 
 @{
-    ViewBag.Title = "Employee List";
+    ViewBag.Title = "Animais";
 }
 
-
-<div class="panel">
+<ul class="list-inline listaAnimais">
     @foreach (var animal in Model) {
-        var photoPath = "~/images/" + (animal.Foto ?? "noimage.jpg");
-        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
-            <div class="card-header">
+        //var photoPath = " ~/images/" + (animal.Foto1 ?? "noimage.jpg");        
+        <li>
+            <a asp-controller="Animal" asp-action="Details" asp-route-id="@animal.Id">
+            <div class="image">
+                <img class="img-rounded" src="@animal.Foto1" asp-append-version="true" />
+            </div>
+            <div class="info">
                 <h3>@animal.Nome</h3>
+                <p>@animal.Cidade.Nome | @animal.Sexo</p><br />
+                <p class="doadorNome">Doador: @animal.Usuario.Nome</p>
             </div>
-
-            <img class="img-thumbnail" src="@photoPath"
-                 asp-append-version="true" />
-
-            <div class="card-footer text-center">
-                <a asp-controller="Animal" asp-action="Details" asp-route-id="@animal.Id"
-                   class="btn btn-primary m-1">Detalhes!</a>
-                <a href="#" class="btn btn-primary m-1">Edit</a>
-                <a href="#" class="btn btn-danger m-1">Delete</a>
-            </div>
-        </div>
+            </a>
+        </li>
     }
-</div>
+</ul>

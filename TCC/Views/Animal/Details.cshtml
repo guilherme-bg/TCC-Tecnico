@@ -1,57 +1,63 @@
 ﻿@model Animal
 
-<h2>@Model.Nome</h2>
+@{
+    List<string> photopaths = new List<string>();
+    photopaths.Add((Model.Foto1));
+    if (Model.Foto2 != null) {
+        photopaths.Add((Model.Foto2));
+    }
+    if (Model.Foto3 != null) {
+        photopaths.Add((Model.Foto3));
+    }
+    ViewData["Title"] = Model.Nome;
+}
 
 @{
-    var photoPath = "~/images/" + (Model.Foto ?? "noimage.jpg");
-    
+    ViewBag.Title = "Animal";
 }
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dd>
-            <img class="img-thumbnail" style="width:500px; height:400px" src="@photoPath" asp-append-version="true" />
-        </dd>
-        <dt>
-            @Html.DisplayFor(model => model.Sexo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Sexo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Porte)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Porte)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Saude)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Saude)
-        </dd>
-        <dt>
-        <dt>
-            @Html.DisplayNameFor(model => model.Obs)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Obs)
-        </dd>
-        <dt>
-            @Html.DisplayFor(model => model.Usuario)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Usuario.Nome)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-    </dl>
-    <div>
-        <a asp-action="Index" asp-controller="Animal" class="btn btn-danger">Retornar para a lista</a>
+
+<h2>@Model.Nome</h2>
+<div class="animalarea">
+    <div class="container">
+        <div class="row" style="height: 613px;     margin-left: -189px;">
+            <div class="col-lg-9 col-md-8">
+                <div class="animal-foto">
+                    <img class="animal-imga" id="foto_principal" src="@Model.Foto1" asp-append-version="true" />
+                </div>
+                <ul id="lista" class="list-inline animal-lista-foto">
+                    @foreach (string foto in photopaths) {
+                        <li>
+                            <a onclick="changeImage(event)" href="">
+                                <img src="@foto" asp-append-version="true" />
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 
+@section Scripts{
+    <script>
+        function myFunction(imgs) {
+            event.preventDefault();
+            // Get the expanded image
+            var expandImg = document.getElementById("foto_principal");
+            // Get the image text
+            expandImg.src = imgs.src;
+            // Show the container element (hidden with CSS)
+            expandImg.parentElement.style.display = "block";
+        }
+
+
+        function changeImage(event) {
+            event = event || window.event;
+            event.preventDefault();
+            var targetElement = event.target || event.srcElement;
+            document.getElementById("foto_principal").src = targetElement.getAttribute("src");
+        }
+
+
+    </script>
+}
