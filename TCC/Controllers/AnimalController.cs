@@ -91,6 +91,8 @@ namespace TCC.Controllers {
         }
         public async Task<IActionResult> Details(int id) {
             var animal = await _AnimalService.FindByIdAsync(id);
+            animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
+            animal.Usuario.Cidade = await _CidadeService.FindByIdAsync(animal.Usuario.CidadeId);
             return View(animal);
         }
 

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TCC.Models;
 
 namespace TCC.Migrations
 {
     [DbContext(typeof(TCCContext))]
-    partial class TCCContextModelSnapshot : ModelSnapshot
+    [Migration("20191127182523_Adotado")]
+    partial class Adotado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

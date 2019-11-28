@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using TCC.Models;
 using TCC.Models.ViewModels;
 using TCC.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace TCC.Controllers {
     public class AccountController : Controller {
@@ -196,6 +197,7 @@ namespace TCC.Controllers {
             return View(list);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id) {
             if (id == null) {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });

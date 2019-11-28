@@ -28,13 +28,14 @@ namespace TCC.Models
         [Required(ErrorMessage = "Selecione sua cidade!")]
         [Display(Name = "Cidade")]
         public int CidadeId { get; set; }
-        [Display(Name = "Sobre mim")]
-        [StringLength(1000)]
+        [Display(Name = "Biografia")]
         public string Bio { get; set; }
         public ICollection<Animal> Animais { get; set; } = new List<Animal>();
+
         public Usuario()
         {            
         }
+
         public void AddAnimal(Animal animal) {
             Animais.Add(animal);
         }

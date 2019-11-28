@@ -89,13 +89,12 @@
         function ValidateFile(e) {
             var fileCount = document.getElementById('fotos').files.length;
 
-            if (fileCount > 3)
-            {
+            if (fileCount > 3) {
                 alert("Insira no máximo 3 imagens do animal!!!");
                 e.wrap('<form>').closest('form').get(0).reset();
                 e.unwrap();
                 return false;
-            } 
+            }
         }
 
     </script>

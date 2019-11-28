@@ -29,8 +29,9 @@ namespace TCC.Models {
         [Required]
         [Display(Name = "Sobre o animal")]
         public string Descricao { get; set; }
-        [Display(Name = "Observações sobre a saúde")]
+        [Display(Name = "Observações ou deficiências")]
         public string Obs { get; set; }
+        public bool Adotado { get; set; }
         public DateTime Data_Cadastro { get; set; }
         public Usuario Usuario { get; set; }
         public string UsuarioId { get; set; }

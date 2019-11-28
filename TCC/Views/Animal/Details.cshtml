@@ -1,5 +1,6 @@
 ﻿@model Animal
-
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<Usuario> UserManager
 @{
     List<string> photopaths = new List<string>();
     photopaths.Add((Model.Foto1));
@@ -9,6 +10,8 @@
     if (Model.Foto3 != null) {
         photopaths.Add((Model.Foto3));
     }
+    var saude = Model.Saude.Split(",");
+    var vacina = Model.Vacina.Split(",");
     ViewData["Title"] = Model.Nome;
 }
 
@@ -16,7 +19,7 @@
     ViewBag.Title = "Animal";
 }
 
-<h2>@Model.Nome</h2>
+<h1>@Model.Nome</h1>
 <div class="animalarea">
     <div class="container">
         <div class="row" style="height: 613px;     margin-left: -189px;">
@@ -35,6 +38,71 @@
                 </ul>
             </div>
         </div>
+        <div class="info-container">
+            <h4 id="cadastro">Cadastrado em: @Model.Data_Cadastro.ToString("dd/MM/yyyy")</h4>
+            <div class="info-text">
+                <h4>Sexo: @Model.Sexo |</h4>
+                <h4>Porte: @Model.Porte</h4><br />
+                <h4>Cidade: @Model.Usuario.Cidade.Nome</h4><br />
+                <a id="doador" asp-action="details" asp-controller="account" asp-route-id="@Model.UsuarioId">
+                    <h4>Doador: @Model.Usuario.Nome</h4>
+                </a>
+                @if (Model.UsuarioId == UserManager.GetUserId(User) && !Model.Adotado) {
+                    <a class="botao btn btn-primary" asp-action="Adotar" asp-controller="animal" asp-route-id="@Model.Id">
+                        <span class="glyphicon glyphicon-heart "></span>
+                        Confirmar Adoção
+                    </a>
+                } else if (Model.UsuarioId == UserManager.GetUserId(User) && Model.Adotado) {
+                    <a class="botao btn btn-danger" asp-action="Devolver" asp-controller="animal" asp-route-id="@Model.Id">
+                        <span class="glyphicon glyphicon-heart "></span>
+                        Cancelar Adoção
+                    </a>
+                } else if (Model.Adotado) {
+                    <a class="btn btn-primary disabled">
+                        <span class="glyphicon glyphicon-heart "></span>
+                        Já adotado
+                    </a>
+                } else if (!Model.Adotado) {
+                    <a class="btn btn-primary">
+                        <span class="glyphicon glyphicon-heart "></span>
+                        Tenho Interesse
+                    </a>
+                }
+
+                <div class="listas-saude">
+                    <div class="li-saude">
+                        <h4>Saúde:</h4>
+                        <ul>
+                            @foreach (string s in saude) {
+
+                                <li class="glyphicon glyphicon-check">@s</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="li-vacin">
+                        <h4>Vacinas:</h4>
+                        <ul>
+                            @foreach (string v in vacina) {
+                                <li class="glyphicon glyphicon-check">@v</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    @if (Model.Obs != null) {
+        <div class="obs-con">
+            <h4>@Html.DisplayNameFor(model => model.Obs) de @Model.Nome</h4>
+            <p>@Model.Obs</p>
+        </div>
+    }
+    <div class="sob-con">
+        <h4>Sobre @Model.Nome</h4>
+        <p>@Model.Descricao</p>
     </div>
 </div>
 
@@ -42,22 +110,15 @@
     <script>
         function myFunction(imgs) {
             event.preventDefault();
-            // Get the expanded image
             var expandImg = document.getElementById("foto_principal");
-            // Get the image text
             expandImg.src = imgs.src;
-            // Show the container element (hidden with CSS)
             expandImg.parentElement.style.display = "block";
         }
-
-
         function changeImage(event) {
             event = event || window.event;
             event.preventDefault();
             var targetElement = event.target || event.srcElement;
             document.getElementById("foto_principal").src = targetElement.getAttribute("src");
         }
-
-
     </script>
 }
