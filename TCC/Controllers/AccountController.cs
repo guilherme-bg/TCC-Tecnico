@@ -28,8 +28,6 @@ namespace TCC.Controllers {
             SignInManager = signInManager;
             _CidadeService = cidadeService;
             _UsuarioService = usuarioService;
-
-
             Logger = logger;
             _EmailSender = emailSender;
         }

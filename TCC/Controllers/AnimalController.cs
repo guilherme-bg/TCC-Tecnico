@@ -37,7 +37,7 @@ namespace TCC.Controllers {
         [AllowAnonymous]
         public async Task<IActionResult> Index() {
             var list = await _AnimalService.FinAllAsync();
-            foreach(Animal animal in list) {
+            foreach (Animal animal in list) {
                 animal.Cidade = await _CidadeService.FindByIdAsync(animal.CidadeId);
                 animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
             }
@@ -54,13 +54,13 @@ namespace TCC.Controllers {
             List<string> fotosSalvas = new List<string>();
             if (ModelState.IsValid && fotosSalvas.Count <= 3) {
                 string uniqueFileName = null;
-                if(model.Fotos != null && model.Fotos.Count > 0) {
-                    foreach(IFormFile foto in model.Fotos) {                    
-                    string uploadsFolder = Path.Combine(HostingEnvironment.WebRootPath, "images\\");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Nome + "_" + foto.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    await foto.CopyToAsync(new FileStream(filePath, FileMode.Create));
-                    fotosSalvas.Add(" ~/images/" + uniqueFileName);
+                if (model.Fotos != null && model.Fotos.Count > 0) {
+                    foreach (IFormFile foto in model.Fotos) {
+                        string uploadsFolder = Path.Combine(HostingEnvironment.WebRootPath, "images\\");
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Nome + "_" + foto.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        await foto.CopyToAsync(new FileStream(filePath, FileMode.Create));
+                        fotosSalvas.Add(" ~/images/" + uniqueFileName);
                     }
                 }
                 Animal animal = new Animal {
@@ -68,7 +68,7 @@ namespace TCC.Controllers {
                     Especie = model.Animal.Especie,
                     Porte = model.Animal.Porte,
                     Sexo = model.Animal.Sexo,
-                    Saude = String.Join(",",model.Saude),
+                    Saude = String.Join(",", model.Saude),
                     Vacina = String.Join(",", model.Vacina),
                     Descricao = model.Animal.Descricao,
                     Data_Cadastro = DateTime.Now,
@@ -78,17 +78,56 @@ namespace TCC.Controllers {
                     Usuario = user,
                     CidadeId = user.CidadeId,
                     Cidade = user.Cidade
-                };                
+                };
                 if (fotosSalvas.Count >= 2) animal.Foto2 = fotosSalvas.ElementAt(1);
                 if (fotosSalvas.Count == 3) animal.Foto3 = fotosSalvas.ElementAt(2);
 
                 _TccContext.Animal.Add(animal);
                 animal.Usuario.AddAnimal(animal);
-                _TccContext.SaveChanges();                
-                return RedirectToAction("index","home");
+                _TccContext.SaveChanges();
+                return RedirectToAction("index", "home");
             }
             return View(model);
         }
+
+        public async Task<IActionResult> Edit(int id) {
+            var animal = await _AnimalService.FindByIdAsync(id);
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            if (animal.UsuarioId == user.Id || (await UserManager.IsInRoleAsync(user, "Admin") || await UserManager.IsInRoleAsync(user, "Moderador"))) {
+                var model = new EditarAnimalViewModel {
+                    Id = animal.Id,
+                    Especie = animal.Especie,
+                    Nome = animal.Nome,
+                    Sexo = animal.Sexo,
+                    Porte = animal.Porte,                    
+                    Descricao = animal.Descricao,
+                    Obs = animal.Obs
+                };
+                return View(model);
+            } else {
+                return View("AccessDenied");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditarAnimalViewModel model) {
+            var animal = await _AnimalService.FindByIdAsync(model.Id);
+
+            if (ModelState.IsValid) {
+                animal.Nome = model.Nome;
+                animal.Porte = model.Porte;
+                animal.Sexo = model.Sexo;                                
+                animal.Descricao = model.Descricao;
+                animal.Obs = model.Descricao;
+                _TccContext.Animal.Update(animal);
+                _TccContext.SaveChanges();
+                return RedirectToAction("Details", animal);
+            }
+            return View(model);
+        }
+
+
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id) {
             var animal = await _AnimalService.FindByIdAsync(id);
             animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
@@ -96,5 +135,34 @@ namespace TCC.Controllers {
             return View(animal);
         }
 
+        public async Task<IActionResult> Adopted(int id) {
+            var animal = await _AnimalService.FindByIdAsync(id);
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            if (animal.UsuarioId == user.Id) {
+                animal.Adotado = true;
+                _TccContext.Update(animal);
+                _TccContext.SaveChanges();
+                animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
+                animal.Usuario.Cidade = await _CidadeService.FindByIdAsync(animal.Usuario.CidadeId);
+                return View("Details", animal);
+            } else {
+                return View("AccessDenied");
+            }
+        }
+
+        public async Task<IActionResult> AvailableAgain(int id) {
+            var animal = await _AnimalService.FindByIdAsync(id);
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            if (animal.UsuarioId == user.Id) {
+                animal.Adotado = false;
+                _TccContext.Update(animal);
+                _TccContext.SaveChanges();
+                animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
+                animal.Usuario.Cidade = await _CidadeService.FindByIdAsync(animal.Usuario.CidadeId);
+                return View("Details", animal);
+            } else {
+                return View("AccessDenied");
+            }
+        }
     }
 }

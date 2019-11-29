@@ -19,7 +19,15 @@
     ViewBag.Title = "Animal";
 }
 
-<h1>@Model.Nome</h1>
+<div class="container">
+    <h1 style="display: inline; margin-top: 10px;">@Model.Nome</h1>
+    @if (Model.UsuarioId == UserManager.GetUserId(User) && !Model.Adotado) {
+        <a class="topo btn btn-primary" asp-action="Edit" asp-controller="animal" asp-route-id="@Model.Id">
+            <span class="glyphicon glyphicon-edit "></span>
+            Editar Animal
+        </a>
+    }
+</div>
 <div class="animalarea">
     <div class="container">
         <div class="row" style="height: 613px;     margin-left: -189px;">
@@ -39,7 +47,8 @@
             </div>
         </div>
         <div class="info-container">
-            <h4 id="cadastro">Cadastrado em: @Model.Data_Cadastro.ToString("dd/MM/yyyy")</h4>
+
+            <h4 id="cadastro" class="">Cadastrado em: @Model.Data_Cadastro.ToString("dd/MM/yyyy")</h4>
             <div class="info-text">
                 <h4>Sexo: @Model.Sexo |</h4>
                 <h4>Porte: @Model.Porte</h4><br />
@@ -47,13 +56,15 @@
                 <a id="doador" asp-action="details" asp-controller="account" asp-route-id="@Model.UsuarioId">
                     <h4>Doador: @Model.Usuario.Nome</h4>
                 </a>
+            </div>
+            <div class="botoes">
                 @if (Model.UsuarioId == UserManager.GetUserId(User) && !Model.Adotado) {
-                    <a class="botao btn btn-primary" asp-action="Adotar" asp-controller="animal" asp-route-id="@Model.Id">
+                    <a class="btn btn-primary" asp-action="Adopted" asp-controller="animal" asp-route-id="@Model.Id">
                         <span class="glyphicon glyphicon-heart "></span>
                         Confirmar Adoção
                     </a>
                 } else if (Model.UsuarioId == UserManager.GetUserId(User) && Model.Adotado) {
-                    <a class="botao btn btn-danger" asp-action="Devolver" asp-controller="animal" asp-route-id="@Model.Id">
+                    <a class="btn btn-danger" asp-action="AvailableAgain" asp-controller="animal" asp-route-id="@Model.Id">
                         <span class="glyphicon glyphicon-heart "></span>
                         Cancelar Adoção
                     </a>
@@ -68,28 +79,27 @@
                         Tenho Interesse
                     </a>
                 }
-
-                <div class="listas-saude">
-                    <div class="li-saude">
-                        <h4>Saúde:</h4>
-                        <ul>
-                            @foreach (string s in saude) {
-
-                                <li class="glyphicon glyphicon-check">@s</li>
-                            }
-                        </ul>
-                    </div>
-                    <div class="li-vacin">
-                        <h4>Vacinas:</h4>
-                        <ul>
-                            @foreach (string v in vacina) {
-                                <li class="glyphicon glyphicon-check">@v</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-
             </div>
+            <div class="listas-saude">
+                <div class="li-saude">
+                    <h4>Saúde:</h4>
+                    <ul>
+                        @foreach (string s in saude) {
+
+                            <li class="glyphicon glyphicon-check">@s</li>
+                        }
+                    </ul>
+                </div>
+                <div class="li-vacin">
+                    <h4>Vacinas:</h4>
+                    <ul>
+                        @foreach (string v in vacina) {
+                            <li class="glyphicon glyphicon-check">@v</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

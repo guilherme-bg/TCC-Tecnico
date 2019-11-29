@@ -1,0 +1,45 @@
+﻿@model TCC.Models.ViewModels.EditarAnimalViewModel
+@{
+    ViewData["Title"] = "Editar ";
+}
+
+    <form method="post">
+
+        <div class="form-group">
+            <label class="col-lg-2 control-label">Sexo:</label>
+            <select asp-for="Sexo" class="form-control">
+                <option selected value="@Model.Sexo" disabled hidden>@Model.Sexo</option>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+            </select>
+            <span asp-validation-for="Sexo" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="col-lg-2 control-label" asp-for="Nome"></label>
+            <input asp-for="Nome" class="form-control" />
+            <span asp-validation-for="Nome" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label" asp-for="Porte"></label>
+            <select asp-for="Porte" class="form-control">
+                <option selected value="@Model.Porte" disabled hidden>@Model.Porte</option>
+                <option value="Pequeno">Pequeno</option>
+                <option value="Médio">Médio</option>
+                <option value="Grande">Grande</option>
+            </select>
+            <span asp-validation-for="Porte" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">Sobre @Model.Nome:</label>
+            <textarea class="form-control" asp-for="Descricao" placeholder="Sobre o amiguinho...." rows="8" cols="160"></textarea>
+            <span asp-validation-for="Descricao" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">Observações sobre a saúde de @Model.Nome:</label>
+            <textarea class="form-control" asp-for="Obs" placeholder="Observações...." rows="8" cols="160"></textarea>
+            <span asp-validation-for="Obs" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Cadastrar Animal</button>
+        <a asp-action="Details" asp-controller="Animal" asp-route-id="@Model.Id" class="btn btn-danger">Cancelar</a>
+    </form>
