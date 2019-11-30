@@ -67,9 +67,7 @@ namespace TCC.Controllers {
                     Nome = model.Animal.Nome,
                     Especie = model.Animal.Especie,
                     Porte = model.Animal.Porte,
-                    Sexo = model.Animal.Sexo,
-                    Saude = String.Join(",", model.Saude),
-                    Vacina = String.Join(",", model.Vacina),
+                    Sexo = model.Animal.Sexo,                    
                     Descricao = model.Animal.Descricao,
                     Data_Cadastro = DateTime.Now,
                     Foto1 = fotosSalvas.ElementAt(0),
@@ -79,6 +77,8 @@ namespace TCC.Controllers {
                     CidadeId = user.CidadeId,
                     Cidade = user.Cidade
                 };
+                if (model.Saude != null) animal.Saude = String.Join(",", model.Saude);
+                if (model.Vacina != null) animal.Vacina = String.Join(",", model.Vacina);                    
                 if (fotosSalvas.Count >= 2) animal.Foto2 = fotosSalvas.ElementAt(1);
                 if (fotosSalvas.Count == 3) animal.Foto3 = fotosSalvas.ElementAt(2);
 
@@ -160,6 +160,19 @@ namespace TCC.Controllers {
                 animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
                 animal.Usuario.Cidade = await _CidadeService.FindByIdAsync(animal.Usuario.CidadeId);
                 return View("Details", animal);
+            } else {
+                return View("AccessDenied");
+            }
+        }
+
+        [Authorize(Roles = "Admin, Moderador")]
+        public async Task<IActionResult> Delete(int id) {
+            var animal = await _AnimalService.FindByIdAsync(id);           
+            if (User.IsInRole("Admin") || User.IsInRole("Moderador")) {
+                animal.Adotado = false;
+                _TccContext.Remove(animal);
+                _TccContext.SaveChanges();                
+                return RedirectToAction("Index");
             } else {
                 return View("AccessDenied");
             }

@@ -9,7 +9,7 @@
     ViewBag.Title = "Animais";
 }
 
-<ul class="list-inline listaAnimais">
+<ul class="listaAnimais list-inline ">
     @foreach (var animal in Model) {
         <li>
             <a asp-controller="Animal" asp-action="Details" asp-route-id="@animal.Id">

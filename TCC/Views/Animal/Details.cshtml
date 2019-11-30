@@ -10,8 +10,10 @@
     if (Model.Foto3 != null) {
         photopaths.Add((Model.Foto3));
     }
-    var saude = Model.Saude.Split(",");
-    var vacina = Model.Vacina.Split(",");
+    ICollection<string> saude = new List<string>();
+    ICollection<string> vacina = new List<string>();
+    if (Model.Saude != null) { saude = Model.Saude.Split(","); }
+    if (Model.Vacina != null) { vacina = Model.Vacina.Split(","); }
     ViewData["Title"] = Model.Nome;
 }
 
@@ -19,12 +21,18 @@
     ViewBag.Title = "Animal";
 }
 
-<div class="container">
+<div class="container topo-nome">
     <h1 style="display: inline; margin-top: 10px;">@Model.Nome</h1>
     @if (Model.UsuarioId == UserManager.GetUserId(User) && !Model.Adotado) {
         <a class="topo btn btn-primary" asp-action="Edit" asp-controller="animal" asp-route-id="@Model.Id">
             <span class="glyphicon glyphicon-edit "></span>
             Editar Animal
+        </a>
+    }
+    @if (User.IsInRole("Admin") || User.IsInRole("Moderador")) {
+        <a class="topo-2 btn btn-danger" asp-action="Delete" asp-controller="animal" asp-route-id="@Model.Id">
+            <span class="glyphicon glyphicon-remove "></span>
+            Deletar Animal
         </a>
     }
 </div>
@@ -74,35 +82,61 @@
                         Já adotado
                     </a>
                 } else if (!Model.Adotado) {
-                    <a class="btn btn-primary">
+                    <a id="popup" class="btn btn-primary">
                         <span class="glyphicon glyphicon-heart "></span>
-                        Tenho Interesse
+                        Quero Adotar
                     </a>
                 }
             </div>
             <div class="listas-saude">
-                <div class="li-saude">
-                    <h4>Saúde:</h4>
-                    <ul>
-                        @foreach (string s in saude) {
+                @if (saude.Count != 0) {
+                    <div class="li-saude">
+                        <h4>Saúde:</h4>
+                        <ul>
+                            @foreach (string s in saude) {
 
-                            <li class="glyphicon glyphicon-check">@s</li>
-                        }
-                    </ul>
-                </div>
-                <div class="li-vacin">
-                    <h4>Vacinas:</h4>
-                    <ul>
-                        @foreach (string v in vacina) {
-                            <li class="glyphicon glyphicon-check">@v</li>
-                        }
-                    </ul>
-                </div>
+                                <li class="glyphicon glyphicon-check">@s</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (vacina.Count != 0) {
+                    <div class="li-vacin">
+                        <h4>Vacinas:</h4>
+                        <ul>
+                            @foreach (string v in vacina) {
+                                <li class="glyphicon glyphicon-check">@v</li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
 
         </div>
     </div>
 </div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2 style="color: #f89406;">Quer Adotar?</h2>
+        </div>
+        <div class="modal-body">
+            <h4>Lembre-se:</h4>
+            <p>Informe ao doador que viu o anúncio do animal em nosso site.</p><br />
+            <p>Para adotar o animal você deve entrar diretamente em contato com o doador através destas informações:</p>
+            <span class="glyphicon glyphicon-earphone">
+                Telefone: @Model.Usuario.Telefone
+            </span><br />
+            <span class="glyphicon glyphicon-envelope">
+                Email: @Model.Usuario.Email
+            </span>
+        </div>
+    </div>
+
+</div>
+
 <div class="container">
     @if (Model.Obs != null) {
         <div class="obs-con">
@@ -129,6 +163,27 @@
             event.preventDefault();
             var targetElement = event.target || event.srcElement;
             document.getElementById("foto_principal").src = targetElement.getAttribute("src");
+        }
+
+
+        var modal = document.getElementById("myModal");
+
+        var btn = document.getElementById("popup");
+
+        var span = document.getElementsByClassName("close")[0];
+
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 }
