@@ -35,15 +35,17 @@ namespace TCC.Controllers {
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index() {
-            IEnumerable<Animal> list = await _AnimalService.FinAllAsync();
+        public async Task<IActionResult> Index(AnimalFilteringViewModel model) {
+            var list = _AnimalService.GetAnimals(model);            
             foreach (Animal animal in list) {
                 animal.Cidade = await _CidadeService.FindByIdAsync(animal.CidadeId);
                 animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
             }
             list = list.OrderBy(x => x.Data_Cadastro.TimeOfDay).ThenBy(x => x.Data_Cadastro.Date).ThenBy(x => x.Data_Cadastro.Year);
             return View(list);
+
         }
+
         public async Task<IActionResult> AnimalRegister() {
             RegistrarAnimalFormViewModel model = new RegistrarAnimalFormViewModel();
             return View(model);
@@ -68,7 +70,7 @@ namespace TCC.Controllers {
                     Nome = model.Animal.Nome,
                     Especie = model.Animal.Especie,
                     Porte = model.Animal.Porte,
-                    Sexo = model.Animal.Sexo,                    
+                    Sexo = model.Animal.Sexo,
                     Descricao = model.Animal.Descricao,
                     Data_Cadastro = DateTime.Now,
                     Foto1 = fotosSalvas.ElementAt(0),
@@ -79,7 +81,7 @@ namespace TCC.Controllers {
                     Cidade = user.Cidade
                 };
                 if (model.Saude != null) animal.Saude = String.Join(",", model.Saude);
-                if (model.Vacina != null) animal.Vacina = String.Join(",", model.Vacina);                    
+                if (model.Vacina != null) animal.Vacina = String.Join(",", model.Vacina);
                 if (fotosSalvas.Count >= 2) animal.Foto2 = fotosSalvas.ElementAt(1);
                 if (fotosSalvas.Count == 3) animal.Foto3 = fotosSalvas.ElementAt(2);
 
@@ -100,7 +102,7 @@ namespace TCC.Controllers {
                     Especie = animal.Especie,
                     Nome = animal.Nome,
                     Sexo = animal.Sexo,
-                    Porte = animal.Porte,                    
+                    Porte = animal.Porte,
                     Descricao = animal.Descricao,
                     Obs = animal.Obs
                 };
@@ -117,7 +119,7 @@ namespace TCC.Controllers {
             if (ModelState.IsValid) {
                 animal.Nome = model.Nome;
                 animal.Porte = model.Porte;
-                animal.Sexo = model.Sexo;                                
+                animal.Sexo = model.Sexo;
                 animal.Descricao = model.Descricao;
                 animal.Obs = model.Descricao;
                 _TccContext.Animal.Update(animal);
@@ -168,11 +170,11 @@ namespace TCC.Controllers {
 
         [Authorize(Roles = "Admin, Moderador")]
         public async Task<IActionResult> Delete(int id) {
-            var animal = await _AnimalService.FindByIdAsync(id);           
+            var animal = await _AnimalService.FindByIdAsync(id);
             if (User.IsInRole("Admin") || User.IsInRole("Moderador")) {
                 animal.Adotado = false;
                 _TccContext.Remove(animal);
-                _TccContext.SaveChanges();                
+                _TccContext.SaveChanges();
                 return RedirectToAction("Index");
             } else {
                 return View("AccessDenied");
