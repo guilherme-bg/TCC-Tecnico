@@ -36,11 +36,12 @@ namespace TCC.Controllers {
 
         [AllowAnonymous]
         public async Task<IActionResult> Index() {
-            var list = await _AnimalService.FinAllAsync();
+            IEnumerable<Animal> list = await _AnimalService.FinAllAsync();
             foreach (Animal animal in list) {
                 animal.Cidade = await _CidadeService.FindByIdAsync(animal.CidadeId);
                 animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
             }
+            list = list.OrderBy(x => x.Data_Cadastro.TimeOfDay).ThenBy(x => x.Data_Cadastro.Date).ThenBy(x => x.Data_Cadastro.Year);
             return View(list);
         }
         public async Task<IActionResult> AnimalRegister() {
