@@ -42,7 +42,9 @@ namespace TCC.Controllers {
                 animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
             }
             list = list.OrderBy(x => x.Data_Cadastro.TimeOfDay).ThenBy(x => x.Data_Cadastro.Date).ThenBy(x => x.Data_Cadastro.Year);
-            return View(list);
+            model.Animals = list;
+            model.Cidades = await _CidadeService.FindAllAsync();
+            return View(model);
 
         }
 

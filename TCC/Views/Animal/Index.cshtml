@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Animal>
+﻿@model TCC.Models.ViewModels.AnimalFilteringViewModel
 @inject TCC.Services.CidadeService _cidade
 
 @{
@@ -8,26 +8,58 @@
 @{
     ViewBag.Title = "Animais";
 }
+<form method="get">
+    <div class="container">
+        <p>Nome do amiguinho:</p>
+        <input asp-for="Nome" class="form-control" />
 
+
+        <p>Espécie:</p>
+        <select class="form-control" asp-for="Especie">
+            <option selected value="">---Nenhum--</option>
+            <option value="Cachorro">Cachorro</option>
+            <option value="Gato">Gato</option>
+        </select>
+
+        <label class="col-lg-2 control-label" asp-for="Porte"></label>
+        <select asp-for="Porte" class="form-control">
+            <option selected value="">---Nenhum--</option>
+            <option value="Pequeno">Pequeno</option>
+            <option value="Médio">Médio</option>
+            <option value="Grande">Grande</option>
+        </select>
+        <div class="form-group">
+            <p>Cidade</p>
+            @Html.DropDownListFor(m => m.CidadeId, new SelectList(Model.Cidades, "Id", "Nome"), "--Selecione a Cidade--", new { @class = "form-control" })
+            <span asp-validation-for="CidadeId" class="text-danger"></span>
+        </div>
+
+        <input type="submit" value="Buscar" />
+    </div>
+</form>
+@if(Model.Animals.Any()) {
 <ul class="listaAnimais list-inline ">
-    @foreach (var animal in Model) {
+    @foreach (var animal in Model.Animals) {
         <li>
             <a asp-controller="Animal" asp-action="Details" asp-route-id="@animal.Id">
-            <div class="image">
-                <img class="img-rounded" src="@animal.Foto1" asp-append-version="true" />
-            </div>
-            <div class="info">
-                <h3>@animal.Nome</h3>
-                <div class="linha"></div>
-                @if (animal.Adotado) {
-                    <p class="disponibilidade text-danger">ADOTADO</p>
-                } else {
-                    <p class="disponibilidade text-success">DISPONÍVEL</p>
-                }
-                <p>@animal.Cidade.Nome | @animal.Sexo</p><br />
-                <p class="doadorNome">Doador: @animal.Usuario.Nome</p>
-            </div>
+                <div class="image">
+                    <img class="img-rounded" src="@animal.Foto1" asp-append-version="true" />
+                </div>
+                <div class="info">
+                    <h3>@animal.Nome</h3>
+                    <div class="linha"></div>
+                    @if (animal.Adotado) {
+                        <p class="disponibilidade text-danger">ADOTADO</p>
+                    } else {
+                        <p class="disponibilidade text-success">DISPONÍVEL</p>
+                    }
+                    <p>@animal.Cidade.Nome | @animal.Sexo</p><br />
+                    <p class="doadorNome">Doador: @animal.Usuario.Nome</p>
+                </div>
             </a>
         </li>
     }
 </ul>
+} else {
+    <h2 class="text-danger">Sem Resultados!</h2>
+}

@@ -10,5 +10,6 @@ namespace TCC.Models.ViewModels {
         public string Porte { get; set; }        
         public int? CidadeId { get; set; }
         public ICollection<Cidade> Cidades { get; set; }
+        public IEnumerable<Animal> Animals { get; set; }
     }
 }
