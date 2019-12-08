@@ -1,4 +1,4 @@
-﻿@model Usuario
+﻿@model TCC.Models.ViewModels.UsuarioDetailsViewModel
 @{
     ViewData["Title"] = "Detalhes";
 }
@@ -9,57 +9,69 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Nome)
+            @Html.DisplayNameFor(model => model.Usuario.Nome)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Nome)
+            @Html.DisplayFor(model => model.Usuario.Nome)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Usuario.Email)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.Usuario.Email)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Telefone)
+            @Html.DisplayNameFor(model => model.Usuario.Telefone)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Telefone)
+            @Html.DisplayFor(model => model.Usuario.Telefone)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Cidade)
+            @Html.DisplayNameFor(model => model.Usuario.Cidade)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Cidade.Nome)
+            @Html.DisplayFor(model => model.Usuario.Cidade.Nome)
         </dd>
         <dt>
         <dt>
-            @Html.DisplayNameFor(model => model.Moradia)
+            @Html.DisplayNameFor(model => model.Usuario.Moradia)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Moradia)
+            @Html.DisplayFor(model => model.Usuario.Moradia)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Protecao)
+            @Html.DisplayNameFor(model => model.Usuario.Protecao)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Protecao)
+            @Html.DisplayFor(model => model.Usuario.Protecao)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.QtAnimais)
+            @Html.DisplayNameFor(model => model.Usuario.QtAnimais)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.QtAnimais)
+            @Html.DisplayFor(model => model.Usuario.QtAnimais)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Bio)
+            @Html.DisplayNameFor(model => model.Usuario.Bio)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Bio)
+            @Html.DisplayFor(model => model.Usuario.Bio)
+        </dd>
+        <dt>
+            Animais Cadastrados:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AnimaisCadastrados)
+        </dd>
+        <dt>
+            Animais Adotados:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AnimaisCadastradosAdotados)
         </dd>
 
     </dl>
 </div>
 <div>
-    <a asp-action="index" asp-controller="animal" class="btn btn-danger">Retornar para a lista</a>
+    <a asp-action="index" asp-controller="animal" class="btn btn-danger">Retornar para a lista de animais</a>
 </div>

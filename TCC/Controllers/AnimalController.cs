@@ -40,8 +40,7 @@ namespace TCC.Controllers {
             foreach (Animal animal in list) {
                 animal.Cidade = await _CidadeService.FindByIdAsync(animal.CidadeId);
                 animal.Usuario = await UserManager.FindByIdAsync(animal.UsuarioId);
-            }
-            list = list.OrderBy(x => x.Data_Cadastro.TimeOfDay).ThenBy(x => x.Data_Cadastro.Date).ThenBy(x => x.Data_Cadastro.Year);
+            }            
             model.Animals = list;
             model.Cidades = await _CidadeService.FindAllAsync();
             return View(model);

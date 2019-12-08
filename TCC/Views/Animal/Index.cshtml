@@ -21,12 +21,17 @@
             <option value="Gato">Gato</option>
         </select>
 
-        <label class="col-lg-2 control-label" asp-for="Porte"></label>
+        <p>Porte</p>
         <select asp-for="Porte" class="form-control">
             <option selected value="">---Nenhum--</option>
             <option value="Pequeno">Pequeno</option>
             <option value="Médio">Médio</option>
             <option value="Grande">Grande</option>
+        </select>
+        <p>Disponibilidade</p>
+        <select asp-for="Disponibilidade" class="form-control">
+            <option selected value="disponível">Disponível</option>
+            <option value="adotado">Adotado</option>
         </select>
         <div class="form-group">
             <p>Cidade</p>

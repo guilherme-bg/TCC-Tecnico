@@ -19,17 +19,18 @@ namespace TCC.Controllers {
         private readonly SignInManager<Usuario> SignInManager;
         private readonly CidadeService _CidadeService;
         private readonly UsuarioService _UsuarioService;
-
+        private readonly AnimalService _AnimalService;
         private readonly ILogger<AccountController> Logger;
         private readonly IEmailSender _EmailSender;
 
-        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, ILogger<AccountController> logger, IEmailSender emailSender) {
+        public AccountController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, CidadeService cidadeService, UsuarioService usuarioService, ILogger<AccountController> logger, IEmailSender emailSender, AnimalService animalService) {
             UserManager = userManager;
             SignInManager = signInManager;
             _CidadeService = cidadeService;
             _UsuarioService = usuarioService;
             Logger = logger;
             _EmailSender = emailSender;
+            _AnimalService = animalService;
         }
 
         [HttpPost]
@@ -196,15 +197,23 @@ namespace TCC.Controllers {
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Details(string id) {
+        public async Task<IActionResult> Details(string id, UsuarioDetailsViewModel model) {
             if (id == null) {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-            var obj = await _UsuarioService.FindByIdAsync(id);
-            if (obj == null) {
+            model.Usuario = await _UsuarioService.FindByIdAsync(id);
+            var animais = await _AnimalService.FindAllAsync();
+            foreach(var animal in animais) {
+                if(animal.UsuarioId == id) {
+                    model.AnimaisCadastrados += 1;
+                    if (animal.Adotado) model.AnimaisCadastradosAdotados += 1;
+                }
+            }
+            
+            if (model.Usuario == null) {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
-            return View(obj);
+            return View(model);
         }
 
         [AllowAnonymous]

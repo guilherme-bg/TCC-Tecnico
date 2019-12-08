@@ -33,6 +33,12 @@ namespace TCC.Services {
                     result = result.Where(x => x.Porte.Contains(model.Porte));
                 if (model.CidadeId.HasValue)
                     result = result.Where(x => x.CidadeId == model.CidadeId);
+                if (model.Disponibilidade == "adotado") {
+                    result = result.Where(x => x.Adotado);
+                } else {                    
+                    result = result.Where(x => !x.Adotado);
+                }
+                result = result.OrderBy(x => x.Data_Cadastro.TimeOfDay).ThenBy(x => x.Data_Cadastro.Date).ThenBy(x => x.Data_Cadastro.Year);                
             }
             return result;
         }
