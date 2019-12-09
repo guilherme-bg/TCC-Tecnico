@@ -89,7 +89,7 @@ namespace TCC.Controllers {
                 _TccContext.Animal.Add(animal);
                 animal.Usuario.AddAnimal(animal);
                 _TccContext.SaveChanges();
-                return RedirectToAction("index", "home");
+                return RedirectToAction("index", "animal");
             }
             return View(model);
         }

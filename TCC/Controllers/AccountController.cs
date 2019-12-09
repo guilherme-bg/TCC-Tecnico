@@ -36,7 +36,7 @@ namespace TCC.Controllers {
         [HttpPost]
         public async Task<IActionResult> Logout() {
             await SignInManager.SignOutAsync();
-            return RedirectToAction("index", "home");
+            return RedirectToAction("index", "animal");
         }
 
         [AcceptVerbs("Get", "Post")]
@@ -108,7 +108,7 @@ namespace TCC.Controllers {
             var result = await UserManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded) {
                 await SignInManager.SignInAsync(user, true);
-                return View();
+                return RedirectToAction("Index", "Animal");
             }
             return View("Login");
         }
@@ -133,7 +133,7 @@ namespace TCC.Controllers {
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) {
                         return Redirect(returnUrl);
                     } else {
-                        return RedirectToAction("index", "home");
+                        return RedirectToAction("index", "animal");
                     }
                 }
                 ModelState.AddModelError(string.Empty, "Email ou senha incorreto");
@@ -188,7 +188,7 @@ namespace TCC.Controllers {
                     return View("EmailConfirmationFailed");
                 }
             }
-            return View("index", "home");
+            return View("index", "Animal");
         }
 
         public async Task<IActionResult> Index() {

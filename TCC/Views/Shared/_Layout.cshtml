@@ -37,13 +37,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">TCC</a>
+                <a asp-area="" asp-controller="Animal" asp-action="Index" class="navbar-brand">Patinhas Douradas</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">Sobre</a></li>
                     <li><a asp-area="" asp-controller="Animal" asp-action="Index">Animais</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">Sobre</a></li>                    
                     @if (signInManager.IsSignedIn(User) && (User.IsInRole("Admin") || User.IsInRole("Moderador"))) {
                         <li><a asp-area="" asp-controller="Administration" asp-action="ListUsers">Usuarios</a></li>
                     }
@@ -58,12 +57,12 @@
                         <li>
                             <form method="post" asp-action="Logout" asp-controller="Account">
                                 <button type="submit" class="navbar-link btn btn-link py-0" style="width:auto">
-                                    Logout @User.Identity.Name
+                                    Sair @User.Identity.Name
                                 </button>
                             </form>
                         </li>
                     } else {
-                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Registrar</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
                     }
                 </ul>

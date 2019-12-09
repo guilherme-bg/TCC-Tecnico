@@ -6,12 +6,12 @@ using System.ComponentModel.DataAnnotations;
 namespace TCC.Models.ViewModels
 {
     public class RegistrarUsuarioFormViewModel {
-        [Required]
+        [Required(ErrorMessage = "Digite seu Email, por favor")]
         [EmailAddress]
         [Remote(action: "IsEmailInUse", controller: "Account", ErrorMessage = "O email já está em uso")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Digite uma senha! ")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

@@ -1,12 +1,9 @@
 ﻿@model TCC.Models.ViewModels.LoginViewModel
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Faça Login";
 }
 
 <h2>@ViewData["Title"]</h2>
-
-<h1>Faça Login</h1>
-
 
 <div class="col-md-12">
     <form method="post">
@@ -30,7 +27,7 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
-        <a asp-action="Index" asp-controller="Home" class="btn btn-danger">Cancelar</a>
+        <a asp-action="Index" asp-controller="Animal" class="btn btn-danger">Cancelar</a>
         <a asp-action="ForgotPassword">Esqueci minha senha!</a>
     </form>
 </div>

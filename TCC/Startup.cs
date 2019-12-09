@@ -37,7 +37,7 @@ namespace TCC {
             services.AddDbContext<TCCContext>(options => options.UseSqlite(connection));
 
             services.AddIdentity<Usuario, IdentityRole>(options => {
-                options.Password.RequiredLength = 10;
+                options.Password.RequiredLength = 6;                
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
@@ -74,7 +74,7 @@ namespace TCC {
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Animal}/{action=Index}/{id?}");
             });
         }
     }
