@@ -57,15 +57,18 @@ namespace TCC.Controllers {
             var user = await UserManager.GetUserAsync(HttpContext.User);
             List<string> fotosSalvas = new List<string>();
             if (ModelState.IsValid && fotosSalvas.Count <= 3) {
-                string uniqueFileName = null;
                 if (model.Fotos != null && model.Fotos.Count > 0) {
                     foreach (IFormFile foto in model.Fotos) {
-                        string uploadsFolder = Path.Combine(HostingEnvironment.WebRootPath, "images\\");
-                        uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Nome + "_" + foto.FileName;
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                        await foto.CopyToAsync(new FileStream(filePath, FileMode.Create));
-                        fotosSalvas.Add(" ~/images/" + uniqueFileName);
-                    }
+                        if(foto.FileName.Contains(".jpg") || foto.FileName.Contains(".png")) {
+                            string uploadsFolder = Path.Combine(HostingEnvironment.WebRootPath, "images\\");
+                            string uniqueFileName = Guid.NewGuid().ToString() + "_" + user.Nome + "_" + foto.FileName;
+                            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                            await foto.CopyToAsync(new FileStream(filePath, FileMode.Create));
+                            fotosSalvas.Add(" ~/images/" + uniqueFileName);                            
+                        } else {
+                            return RedirectToAction("AnimalRegister");
+                        }                        
+                    }                    
                 }
                 Animal animal = new Animal {
                     Nome = model.Animal.Nome,
